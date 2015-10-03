@@ -16,6 +16,8 @@ buildscript {
 }
 
 apply plugin: 'forge'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 version = "1.7.10-1.0"
 group= "covers1624.lib"
@@ -44,6 +46,7 @@ dependencies {
 
 task deobfJar(type: Jar, dependsOn: 'jar') {
 	from sourceSets.main.output
+	from sourceSets.main.allSource
 	classifier "dev"
 }
 
@@ -56,7 +59,7 @@ build.dependsOn deobfJar
 
 artifacts {
 	archives deobfJar
-	archives sourceJar
+	//archives sourceJar
 }
 
 processResources{
