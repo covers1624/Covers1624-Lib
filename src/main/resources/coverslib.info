@@ -1,0 +1,10 @@
+[
+{
+  "modid": "Covers1624Core",
+  "name": "Covers1624 Core",
+  "description": "Contains Basic and some advanced Utility classes used by all my mods.",
+  "version": "1.7.10-1.0",
+  "mcversion": "1.7.10",
+  "authorList": [ "covers1624" ]
+}
+]
