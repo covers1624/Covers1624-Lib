@@ -20,7 +20,7 @@ public class Covers1624Lib extends DummyModContainer implements IFMLLoadingPlugi
     public static LogHelper logger = new LogHelper("Covers1624 Lib");
 
     public Covers1624Lib(){
-        super(MetadataCollection.from(MetadataCollection.class.getResourceAsStream("/coverslib.info"), "Covers1624Core").getMetadataForId("Covers1624Core", null));
+        super(MetadataCollection.from(MetadataCollection.class.getResourceAsStream("/coverslib.info"), "Covers1624Lib").getMetadataForId("Covers1624Lib", null));
     }
 
     @Override

@@ -47,10 +47,16 @@ task deobfJar(type: Jar, dependsOn: 'jar') {
 	classifier "dev"
 }
 
+task sourcejar(type: Jar, dependsOn: 'deobfJar'){
+	from sourceSets.main.allSource
+	classifier = 'src'
+}
+
 build.dependsOn deobfJar
 
 artifacts {
 	archives deobfJar
+	archives sourceJar
 }
 
 processResources{
@@ -63,5 +69,47 @@ processResources{
     }
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://B:/Apache24/htdocs/maven")
+            pom {
+                groupId = "Covers1624Lib"
+                version = project.version
+                artifactId = project.archivesBaseName
+                project {
+                    name project.archivesBaseName
+                    packaging 'jar'
+                    description 'Covers1624Lib'
+                    url 'https://github.com/covers1624/Covers1624-Lib'
+                    scm {
+                        url 'https://github.com/covers1624/Covers1624-Lib'
+                        connection 'scm:git:git@github.com:covers1624/Covers1624-Lib.git'
+                        developerConnection 'scm:git:git@github.com:covers1624/Covers1624-Lib.git'
+                    }
+                    issueManagement {
+                        system 'github'
+                        url 'https://github.com/covers1624/Covers1624-Lib/issues'
+                    }
+                    licenses {
+                        license {
+                            name 'License'
+                            url 'https://raw.githubusercontent.com/covers1624/Covers1624-Lib/master/LICENSE.md'
+                            distribution 'repo'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id 'covers1624'
+                            name 'covers1624'
+                            roles { role 'developer' }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
