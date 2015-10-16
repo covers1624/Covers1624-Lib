@@ -92,6 +92,14 @@ public class ItemUtils {
 		}
 	}
 
+	public static String getOreClassSafe(ItemStack stack){
+		String clazz = getOreClass(stack);
+		if (clazz != null){
+			return clazz;
+		}
+		return "null";
+	}
+
 	public static boolean matchItemStackOre(ItemStack stack1, ItemStack stack2){
 		String ore1 = getOreClass(stack1);
 		String ore2 = getOreClass(stack2);
