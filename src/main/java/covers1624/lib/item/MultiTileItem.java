@@ -1,4 +1,4 @@
-package covers1624.lib;
+package covers1624.lib.item;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

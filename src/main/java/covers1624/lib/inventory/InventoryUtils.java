@@ -32,7 +32,7 @@ public class InventoryUtils {
 
 	public static Slot addSlotToContainer(Container container, Slot slot) {
 		slot.slotNumber = container.inventorySlots.size();
-		Covers1624Lib.logger.info(slot.slotNumber);
+		//Covers1624Lib.logger.info(slot.slotNumber);
 		container.inventorySlots.add(slot);
 		container.inventoryItemStacks.add(null);
 		return slot;
