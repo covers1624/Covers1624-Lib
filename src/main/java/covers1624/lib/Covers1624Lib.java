@@ -8,6 +8,7 @@ import covers1624.lib.util.LogHelper;
 import cpw.mods.fml.common.DummyModContainer;
 import cpw.mods.fml.common.LoadController;
 import cpw.mods.fml.common.MetadataCollection;
+import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.versioning.VersionParser;
@@ -20,9 +21,18 @@ import java.util.Map;
 public class Covers1624Lib extends DummyModContainer implements IFMLLoadingPlugin {
 
 	public static LogHelper logger = new LogHelper("Covers1624 Lib");
+	public static ModMetadata modMetadata = new ModMetadata();
+
+	static {
+		modMetadata.modId = "Covers1624Core";
+		modMetadata.name = "Covers1624 Core";
+		modMetadata.description = "Contains Basic and some advanced Utility classes used by all my mods.";
+		modMetadata.version = "1.7.10-1.0";
+		modMetadata.authorList.add("covers1624");
+	}
 
 	public Covers1624Lib() {
-		super(MetadataCollection.from(MetadataCollection.class.getResourceAsStream("/coverslib.info"), "Covers1624Lib").getMetadataForId("Covers1624Lib", null));
+		super(modMetadata);
 	}
 
 

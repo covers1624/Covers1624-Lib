@@ -1,5 +1,6 @@
 package covers1624.lib.util;
 
+import covers1624.lib.Covers1624Lib;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -79,6 +80,9 @@ public class ItemUtils {
 			for(ItemStack stack : OreDictionary.getOres(name)){
 				registerOre(name, stack);
 			}
+		}
+		if (oreMap.isEmpty()){
+			Covers1624Lib.logger.fatal("Something is messing with the OreDictionary and is causing me to be unable to get all registered items..");
 		}
 	}
 

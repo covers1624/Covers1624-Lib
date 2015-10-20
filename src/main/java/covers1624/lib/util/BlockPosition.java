@@ -209,6 +209,24 @@ public class BlockPosition {
 		return world.getBlock(x, y, z);
 	}
 
+	public int getBlockMeta(World world) {
+		return world.getBlockMetadata(x, y, z);
+	}
+
+	public void setBlock(World world, Block block, ForgeDirection offset) {
+		step(offset);
+		setBlock(world, block);
+		step(offset.getOpposite());
+	}
+
+	public void setBlock(World world, Block block) {
+		setBlock(world, block, 0);
+	}
+
+	public void setBlock(World world, Block block, int metadata) {
+		world.setBlock(x, y, z, block, metadata, 3);
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T getTileEntity(World world, Class<T> targetClass) {
 
