@@ -44,7 +44,10 @@ public class ItemUtils {
 	 * @return The new stack.
 	 */
 	public static ItemStack copyStack(ItemStack stack, int stackSize) {
-		return new ItemStack(stack.getItem(), stackSize, stack.getItemDamage());
+		if (stack.getItem() != null) {
+			return new ItemStack(stack.getItem(), stackSize, stack.getItem().getDamage(stack));
+		}
+		return null;
 	}
 
 	/**
@@ -71,24 +74,24 @@ public class ItemUtils {
 		return itemStack1ID != itemStack2ID ? itemStack1ID - itemStack2ID : (stack1.getItemDamage() == stack2.getItemDamage() ? 0 : (stack1.getItem().getHasSubtypes() ? stack1.getItemDamage() - stack2.getItemDamage() : 0));
 	}
 
-	private static void registerOre(String name, ItemStack stack){
+	private static void registerOre(String name, ItemStack stack) {
 		oreMap.put(stack, name);
 	}
 
-	public static void readOres(){
-		for (String name : OreDictionary.getOreNames()){
-			for(ItemStack stack : OreDictionary.getOres(name)){
+	public static void readOres() {
+		for (String name : OreDictionary.getOreNames()) {
+			for (ItemStack stack : OreDictionary.getOres(name)) {
 				registerOre(name, stack);
 			}
 		}
-		if (oreMap.isEmpty()){
+		if (oreMap.isEmpty()) {
 			Covers1624Lib.logger.fatal("Something is messing with the OreDictionary and is causing me to be unable to get all registered items..");
 		}
 	}
 
-	public static String getOreClass(ItemStack stack){
+	public static String getOreClass(ItemStack stack) {
 		String name = oreMap.get(stack);
-		if (name != null){
+		if (name != null) {
 			return name;
 		} else {
 			stack = new ItemStack(stack.getItem(), 1, OreDictionary.WILDCARD_VALUE);
@@ -96,15 +99,15 @@ public class ItemUtils {
 		}
 	}
 
-	public static String getOreClassSafe(ItemStack stack){
+	public static String getOreClassSafe(ItemStack stack) {
 		String clazz = getOreClass(stack);
-		if (clazz != null){
+		if (clazz != null) {
 			return clazz;
 		}
 		return "null";
 	}
 
-	public static boolean matchItemStackOre(ItemStack stack1, ItemStack stack2){
+	public static boolean matchItemStackOre(ItemStack stack1, ItemStack stack2) {
 		String ore1 = getOreClass(stack1);
 		String ore2 = getOreClass(stack2);
 		return ore1 != null && ore2 != null && ore1.equals(ore2) || compareItemStack(stack1, stack2) == 0;
@@ -115,7 +118,8 @@ public class ItemUtils {
 	 */
 	private static class ItemStackComparator implements Comparator<ItemStack> {
 
-		@Override public int compare(ItemStack stack1, ItemStack stack2) {
+		@Override
+		public int compare(ItemStack stack1, ItemStack stack2) {
 			return compareItemStack(stack1, stack2);
 		}
 	}
