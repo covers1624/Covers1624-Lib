@@ -151,6 +151,14 @@ public class BlockPosition {
 		moveUp(-step);
 	}
 
+	public BlockPosition add(BlockPosition other) {
+		BlockPosition result = new BlockPosition(x, y, z);
+		result.x += other.x;
+		result.y += other.y;
+		result.z += other.z;
+		return result;
+	}
+
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		nbttagcompound.setDouble("i", x);
 		nbttagcompound.setDouble("j", y);
