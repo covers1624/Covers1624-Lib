@@ -176,7 +176,7 @@ public class BlockPosition {
 
 	@Override
 	public int hashCode() {
-		return (x & 0xFFF) | (y & 0xFF << 8) | (z & 0xFFF << 12);
+		return (x & 0xfff) | (y & 0xff << 8) | (z & 0xfff << 12);
 	}
 
 	public BlockPosition min(BlockPosition p) {
@@ -213,18 +213,12 @@ public class BlockPosition {
 		return world.getBlockMetadata(x, y, z);
 	}
 
-	public void setBlock(World world, Block block, ForgeDirection offset) {
-		step(offset);
-		setBlock(world, block);
-		step(offset.getOpposite());
+	public boolean setBlock(World world, Block block) {
+		return setBlock(world, block, 0);
 	}
 
-	public void setBlock(World world, Block block) {
-		setBlock(world, block, 0);
-	}
-
-	public void setBlock(World world, Block block, int metadata) {
-		world.setBlock(x, y, z, block, metadata, 3);
+	public boolean setBlock(World world, Block block, int metadata) {
+		return world.setBlock(x, y, z, block, metadata, 3);
 	}
 
 	@SuppressWarnings("unchecked")
