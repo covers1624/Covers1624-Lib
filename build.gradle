@@ -50,16 +50,10 @@ task deobfJar(type: Jar, dependsOn: 'jar') {
 	classifier "dev"
 }
 
-task sourcejar(type: Jar, dependsOn: 'deobfJar'){
-	from sourceSets.main.allSource
-	classifier = 'src'
-}
-
 build.dependsOn deobfJar
 
 artifacts {
 	archives deobfJar
-	//archives sourceJar
 }
 
 processResources{
@@ -78,9 +72,9 @@ processResources{
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "file://B:/Apache24/htdocs/maven")
+            repository(url: "file:///var/www/maven")
             pom {
-                groupId = "Covers1624Lib"
+                groupId = "covers1624"
                 version = project.version
                 artifactId = project.archivesBaseName
                 project {
