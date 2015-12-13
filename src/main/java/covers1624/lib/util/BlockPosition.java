@@ -1,6 +1,7 @@
 package covers1624.lib.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -219,6 +220,10 @@ public class BlockPosition {
 
 	public int getBlockMeta(World world) {
 		return world.getBlockMetadata(x, y, z);
+	}
+
+	public ItemStack getWorldItemStack(World world){
+		return new ItemStack(getBlock(world), getBlockMeta(world));
 	}
 
 	public boolean setBlock(World world, Block block) {
