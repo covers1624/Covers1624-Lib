@@ -223,7 +223,7 @@ public class BlockPosition {
 	}
 
 	public ItemStack getWorldItemStack(World world){
-		return new ItemStack(getBlock(world), getBlockMeta(world));
+		return new ItemStack(getBlock(world), 1, getBlockMeta(world));
 	}
 
 	public boolean setBlock(World world, Block block) {
