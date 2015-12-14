@@ -6,11 +6,20 @@ import java.io.File;
 
 public class ConfigurationHandler {
 
-    public Configuration configuration;
+    public static  Configuration configuration;
 
     public static boolean logDebug;
+    public static boolean logAllNetworkTraffic;
 
     public static void init(File config){
+        if (configuration == null){
+            configuration = new Configuration(config);
+        }
+        loadConfiguration();
+    }
 
+    public static void loadConfiguration() {
+        logDebug = configuration.getBoolean("logDebug", "Logging", false, "Forces all TRACE logs from my mods to log at level INFO. (Makes the log statements visible in the console, still logs to file regardless.)");
+        logAllNetworkTraffic = configuration.getBoolean("logAllNetworkTraffic", "Logging", false, "Forces all network traffic from my mods to be logged to the console window.(logged to file regardless.)");
     }
 }
