@@ -51,7 +51,7 @@ public class MultiTileBlock extends BlockContainer {
 
 	public void setItemName(int meta, String name) {
 		Item item = Item.getItemFromBlock(this);
-		((MultiTileItem) item).registerSubItem(meta, name);
+		((MultiTileItem) item).registerSubItem(meta, "tile." + name);
 	}
 
 	/**
