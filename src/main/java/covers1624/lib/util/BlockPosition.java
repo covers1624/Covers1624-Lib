@@ -210,7 +210,7 @@ public class BlockPosition {
 		return a;
 	}
 
-	public TileEntity getTileEntity(World world) {
+	public TileEntity getTileEntity(IBlockAccess world) {
 		return world.getTileEntity(x, y, z);
 	}
 
