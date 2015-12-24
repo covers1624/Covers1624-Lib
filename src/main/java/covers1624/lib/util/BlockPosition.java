@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -213,16 +214,16 @@ public class BlockPosition {
 		return world.getTileEntity(x, y, z);
 	}
 
-	public Block getBlock(World world) {
+	public Block getBlock(IBlockAccess world) {
 
 		return world.getBlock(x, y, z);
 	}
 
-	public int getBlockMeta(World world) {
+	public int getBlockMeta(IBlockAccess world) {
 		return world.getBlockMetadata(x, y, z);
 	}
 
-	public ItemStack getWorldItemStack(World world){
+	public ItemStack getWorldItemStack(IBlockAccess world){
 		return new ItemStack(getBlock(world), 1, getBlockMeta(world));
 	}
 
@@ -235,7 +236,7 @@ public class BlockPosition {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T getTileEntity(World world, Class<T> targetClass) {
+	public <T> T getTileEntity(IBlockAccess world, Class<T> targetClass) {
 
 		TileEntity te = world.getTileEntity(x, y, z);
 		if (targetClass.isInstance(te)) {
