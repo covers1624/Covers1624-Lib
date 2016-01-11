@@ -31,7 +31,7 @@ public class ItemUtils {
 			double yVelocity = world.rand.nextFloat() * 0.7D + (1.0D - 0.7D) * 0.5D;
 			double zVelocity = world.rand.nextFloat() * 0.7D + (1.0D - 0.7D) * 0.5D;
 			EntityItem entityItem = new EntityItem(world, x + xVelocity, y + yVelocity, z + zVelocity, stack);
-			entityItem.delayBeforeCanPickup = 10;
+			entityItem.setPickupDelay(10);
 			world.spawnEntityInWorld(entityItem);
 		}
 	}
@@ -85,7 +85,7 @@ public class ItemUtils {
 			}
 		}
 		if (oreMap.isEmpty()) {
-			Covers1624Lib.logger.fatal("Something is messing with the OreDictionary and is causing me to be unable to get all registered items..");
+			LogHelper.fatal("Something is messing with the OreDictionary and is causing me to be unable to get all registered items..");
 		}
 	}
 

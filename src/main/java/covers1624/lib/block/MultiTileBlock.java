@@ -2,13 +2,14 @@ package covers1624.lib.block;
 
 import covers1624.lib.Covers1624Lib;
 import covers1624.lib.item.MultiTileItem;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.GameRegistry;
+import covers1624.lib.util.LogHelper;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
  * Created by covers1624 on 10/10/2015}.
@@ -69,7 +70,7 @@ public class MultiTileBlock extends BlockContainer {
 		try {
 			return tileEntityMap[meta].getDeclaredConstructor(new Class[0]).newInstance();
 		} catch (Exception e){
-			Covers1624Lib.logger.fatal("Unable to create tile with the MetaData of %s.", meta);
+			LogHelper.fatal("Unable to create tile with the MetaData of %s.", meta);
 			return null;
 		}
 	}

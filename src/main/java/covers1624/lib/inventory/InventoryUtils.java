@@ -1,6 +1,7 @@
 package covers1624.lib.inventory;
 
 import covers1624.lib.Covers1624Lib;
+import covers1624.lib.util.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -27,7 +28,7 @@ public class InventoryUtils {
 	}
 
 	public static void printSlotsListed(Container container){
-		Covers1624Lib.logger.info(container.inventorySlots.size());
+		LogHelper.info(container.inventorySlots.size());
 	}
 
 	public static Slot addSlotToContainer(Container container, Slot slot) {

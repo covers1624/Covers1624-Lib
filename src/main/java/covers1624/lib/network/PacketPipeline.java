@@ -2,13 +2,15 @@ package covers1624.lib.network;
 
 import covers1624.lib.Covers1624Lib;
 import covers1624.lib.handler.ConfigurationHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.FMLOutboundHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import covers1624.lib.util.LogHelper;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
@@ -43,17 +45,17 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 	 */
 	public boolean registerPacket(Class<? extends AbstractPacket> clazz) {
 		if (this.packets.size() > 256) {
-			Covers1624Lib.logger.fatal("Failed to register packet, The array is full.");
+			LogHelper.fatal("Failed to register packet, The array is full.");
 			return false;
 		}
 
 		if (this.packets.contains(clazz)) {
-			Covers1624Lib.logger.fatal("Packet Allready Registered: " + clazz.toString());
+			LogHelper.fatal("Packet Allready Registered: " + clazz.toString());
 			return false;
 		}
 
 		if (this.isPostInitialised) {
-			Covers1624Lib.logger.fatal("Already started PostInit, You are doing it wrong, Add Packets any time before PostInit.");
+			LogHelper.fatal("Already started PostInit, You are doing it wrong, Add Packets any time before PostInit.");
 			return false;
 		}
 
@@ -73,13 +75,13 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 		byte discriminator = (byte) this.packets.indexOf(clazz);
 		buffer.writeByte(discriminator);
 		msg.encodeInto(ctx, buffer);
-		FMLProxyPacket proxyPacket = new FMLProxyPacket(buffer.copy(), ctx.channel().attr(NetworkRegistry.FML_CHANNEL).get());
+		FMLProxyPacket proxyPacket = new FMLProxyPacket(new PacketBuffer(buffer.copy()), ctx.channel().attr(NetworkRegistry.FML_CHANNEL).get());
 		out.add(proxyPacket);
 		byte[] bytes = buffer.array();
 		String noBytes = Double.valueOf(bytes.length).toString();
 		String kBytes = Double.valueOf(bytes.length / 1024).toString();
 		String mBytes = Double.valueOf((bytes.length / 1024) / 1024).toString();
-		Covers1624Lib.logger.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Writing packet to network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
+		LogHelper.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Writing packet to network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
 	}
 
 	// In line decoding and handling of the packet
@@ -116,7 +118,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 		String noBytes = Double.valueOf(bytes.length).toString();
 		String kBytes = Double.valueOf(bytes.length / 1024).toString();
 		String mBytes = Double.valueOf((bytes.length / 1024) / 1024).toString();
-		Covers1624Lib.logger.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Reading packet from network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
+		LogHelper.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Reading packet from network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
 
 	}
 
@@ -156,7 +158,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 	/**
 	 * Send this message to everyone.
 	 * <p/>
-	 * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+	 * Adapted from CPW's code in net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
 	 *
 	 * @param message The message to send
 	 */
@@ -168,7 +170,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 	/**
 	 * Send this message to the specified player.
 	 * <p/>
-	 * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+	 * Adapted from CPW's code in net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
 	 *
 	 * @param message The message to send
 	 * @param player  The player to send it to
@@ -182,10 +184,10 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 	/**
 	 * Send this message to everyone within a certain range of a point.
 	 * <p/>
-	 * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+	 * Adapted from CPW's code in net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
 	 *
 	 * @param message The message to send
-	 * @param point   The {@link cpw.mods.fml.common.network.NetworkRegistry.TargetPoint} around which to send
+	 * @param point   The {@link net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint} around which to send
 	 */
 	public void sendToAllAround(AbstractPacket message, NetworkRegistry.TargetPoint point) {
 		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
@@ -196,7 +198,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 	/**
 	 * Send this message to everyone within the supplied dimension.
 	 * <p/>
-	 * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+	 * Adapted from CPW's code in net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
 	 *
 	 * @param message     The message to send
 	 * @param dimensionId The dimension id to target
@@ -210,7 +212,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 	/**
 	 * Send this message to the server.
 	 * <p/>
-	 * Adapted from CPW's code in cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper
+	 * Adapted from CPW's code in net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
 	 *
 	 * @param message The message to send
 	 */

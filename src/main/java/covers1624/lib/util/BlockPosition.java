@@ -1,36 +1,48 @@
 package covers1624.lib.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3i;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.world.chunk.Chunk;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockPosition {
+public class BlockPosition{
 	public int x;
 	public int y;
 	public int z;
-	public ForgeDirection orientation;
+	private boolean hasOrientation;
+	private EnumFacing orientation;
 
 	public static final int[][] SIDE_COORD_MOD = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 }, { 1, 0, 0 } };
+	/*
+		Constructors
+	 */
 
-	public BlockPosition(int x, int y, int z) {
+	public BlockPosition(int x, int y, int z, EnumFacing orientation) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		orientation = ForgeDirection.UNKNOWN;
+		if (orientation != null) {
+			this.orientation = orientation;
+		}
+		this.hasOrientation = orientation != null;
 	}
 
-	public BlockPosition(int x, int y, int z, ForgeDirection corientation) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		orientation = corientation;
+	public BlockPosition(int x, int y, int z) {
+		this(x, y, z, null);
+	}
+
+	public BlockPosition(Vec3i vec3i) {
+		this(vec3i.getX(), vec3i.getY(), vec3i.getZ());
 	}
 
 	public BlockPosition(BlockPosition p) {
@@ -38,53 +50,78 @@ public class BlockPosition {
 		y = p.y;
 		z = p.z;
 		orientation = p.orientation;
+		this.hasOrientation = p.hasOrientation;
 	}
 
 	public BlockPosition(NBTTagCompound nbttagcompound) {
-		x = nbttagcompound.getInteger("i");
-		y = nbttagcompound.getInteger("j");
-		z = nbttagcompound.getInteger("k");
-
-		orientation = ForgeDirection.UNKNOWN;
+		x = nbttagcompound.getInteger("BlockPosition:X");
+		y = nbttagcompound.getInteger("BlockPosition:Y");
+		z = nbttagcompound.getInteger("BlockPosition:Z");
+		if (nbttagcompound.getBoolean("BlockPosition:HasOrientation")) {
+			orientation = EnumFacing.VALUES[nbttagcompound.getInteger("BlockPosition:Orientation")];
+			hasOrientation = true;
+		} else {
+			hasOrientation = false;
+		}
 	}
 
 	public BlockPosition(TileEntity tile) {
-		x = tile.xCoord;
-		y = tile.yCoord;
-		z = tile.zCoord;
-		orientation = ForgeDirection.UNKNOWN;
+		this(tile.getPos());
 	}
+	/*
+		Getters.
+	 */
 
 	public BlockPosition copy() {
 		return new BlockPosition(x, y, z, orientation);
 	}
 
+	public Vec3i convertToVec3i() {
+		return new Vec3i(x, y, z);
+	}
+
+	public BlockPos convertToBlockPos() {
+		return new BlockPos(x, y, z);
+	}
+
+	public boolean hasOrientation(){
+		return hasOrientation;
+	}
+
+	public EnumFacing getOrientation(){
+		return orientation;
+	}
+
+	/*
+		Orientation Manipulation.
+	 */
+
+	public BlockPosition step(EnumFacing dir) {
+		Vec3i directionVec = dir.getDirectionVec();
+		x += directionVec.getX();
+		y += directionVec.getY();
+		z += directionVec.getZ();
+		return this;
+	}
+
+	public BlockPosition step(EnumFacing dir, int dist) {
+		Vec3i directionVec = dir.getDirectionVec();
+		x += directionVec.getX() * dist;
+		y += directionVec.getY() * dist;
+		z += directionVec.getZ() * dist;
+		return this;
+	}
+
+	@Deprecated
 	public BlockPosition step(int dir, int dist) {
-
-		int[] d = SIDE_COORD_MOD[dir];
-		x += d[0] * dist;
-		y += d[1] * dist;
-		z += d[2] * dist;
-		return this;
-	}
-
-	public BlockPosition step(ForgeDirection dir) {
-
-		x += dir.offsetX;
-		y += dir.offsetY;
-		z += dir.offsetZ;
-		return this;
-	}
-
-	public BlockPosition step(ForgeDirection dir, int dist) {
-
-		x += dir.offsetX * dist;
-		y += dir.offsetY * dist;
-		z += dir.offsetZ * dist;
-		return this;
+		return step(EnumFacing.VALUES[dir], dist);
 	}
 
 	public void moveRight(int step) {
+		if (!hasOrientation) {
+			LogHelper.bigError("BlockPosition does not have an orientation! Unable to step..");
+			return;
+		}
 		switch (orientation) {
 		case SOUTH:
 			x = x - step;
@@ -108,6 +145,10 @@ public class BlockPosition {
 	}
 
 	public void moveForwards(int step) {
+		if (!hasOrientation) {
+			LogHelper.bigError("BlockPosition does not have an orientation! Unable to step..");
+			return;
+		}
 		switch (orientation) {
 		case UP:
 			y = y + step;
@@ -136,6 +177,10 @@ public class BlockPosition {
 	}
 
 	public void moveUp(int step) {
+		if (!hasOrientation) {
+			LogHelper.bigError("BlockPosition does not have an orientation! Unable to step..");
+			return;
+		}
 		switch (orientation) {
 		case EAST:
 		case WEST:
@@ -153,35 +198,53 @@ public class BlockPosition {
 		moveUp(-step);
 	}
 
+	/*
+		Adding.
+	 */
+
 	public BlockPosition add(BlockPosition other) {
 		BlockPosition result = new BlockPosition(x, y, z);
 		result.x += other.x;
 		result.y += other.y;
 		result.z += other.z;
+		result.hasOrientation = other.hasOrientation;
+		result.orientation = other.orientation;
 		return result;
 	}
 
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
-		nbttagcompound.setDouble("i", x);
-		nbttagcompound.setDouble("j", y);
-		nbttagcompound.setDouble("k", z);
+	public BlockPosition add(Vec3i other) {
+		return add(new BlockPosition(other));
+	}
+
+	/*
+		Saving and loading.
+	 */
+
+	public void writeToNBT(NBTTagCompound tagCompound) {
+		tagCompound.setDouble("BlockPosition:X", x);
+		tagCompound.setDouble("BlockPosition:Y", y);
+		tagCompound.setDouble("BlockPosition:Z", z);
+		tagCompound.setBoolean("BlockPosition:HasOrientation", hasOrientation);
+		if (hasOrientation) {
+			tagCompound.setInteger("BlockPosition:Orientation", orientation.ordinal());
+		}
 	}
 
 	@Override
 	public String toString() {
-		if (orientation == null) {
-			return "{" + x + ", " + y + ", " + z + "}";
+		if (hasOrientation) {
+			return "{" + x + ", " + y + ", " + z + ";" + orientation.toString() + "}";
 		}
-		return "{" + x + ", " + y + ", " + z + ";" + orientation.toString() + "}";
+		return "{" + x + ", " + y + ", " + z + "}";
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof BlockPosition)) {
-			return false;
-		}
-		BlockPosition bp = (BlockPosition) obj;
-		return bp.x == x && bp.y == y && bp.z == z && bp.orientation == orientation;
+		return obj instanceof BlockPosition && equals((BlockPosition) obj);
+	}
+
+	private boolean equals(BlockPosition other) {
+		return other.x == x && other.y == y && other.z == z && other.orientation == orientation && other.hasOrientation == hasOrientation;
 	}
 
 	@Override
@@ -197,93 +260,55 @@ public class BlockPosition {
 		return new BlockPosition(p.x < x ? x : p.x, p.y < y ? y : p.y, p.z < z ? z : p.z);
 	}
 
+	public List<BlockPosition> getAdjacent() {
+		return getAdjacent(false);
+	}
+
 	public List<BlockPosition> getAdjacent(boolean includeVertical) {
 		List<BlockPosition> a = new ArrayList<BlockPosition>();
-		a.add(new BlockPosition(x + 1, y, z, ForgeDirection.EAST));
-		a.add(new BlockPosition(x - 1, y, z, ForgeDirection.WEST));
-		a.add(new BlockPosition(x, y, z + 1, ForgeDirection.SOUTH));
-		a.add(new BlockPosition(x, y, z - 1, ForgeDirection.NORTH));
+		a.add(new BlockPosition(x + 1, y, z, EnumFacing.EAST));
+		a.add(new BlockPosition(x - 1, y, z, EnumFacing.WEST));
+		a.add(new BlockPosition(x, y, z + 1, EnumFacing.SOUTH));
+		a.add(new BlockPosition(x, y, z - 1, EnumFacing.NORTH));
 		if (includeVertical) {
-			a.add(new BlockPosition(x, y + 1, z, ForgeDirection.UP));
-			a.add(new BlockPosition(x, y - 1, z, ForgeDirection.DOWN));
+			a.add(new BlockPosition(x, y + 1, z, EnumFacing.UP));
+			a.add(new BlockPosition(x, y - 1, z, EnumFacing.DOWN));
 		}
 		return a;
 	}
 
 	public TileEntity getTileEntity(IBlockAccess world) {
-		return world.getTileEntity(x, y, z);
+		return world.getTileEntity(convertToBlockPos());
+	}
+
+	public IBlockState getBlockState(IBlockAccess world){
+		return world.getBlockState(convertToBlockPos());
 	}
 
 	public Block getBlock(IBlockAccess world) {
 
-		return world.getBlock(x, y, z);
+		return getBlockState(world).getBlock();
 	}
 
-	public int getBlockMeta(IBlockAccess world) {
-		return world.getBlockMetadata(x, y, z);
+	public ItemStack getWorldItemStack(IBlockAccess world) {
+		Block block = getBlock(world);
+		return new ItemStack(block, 1, block.getMetaFromState(getBlockState(world)));
 	}
 
-	public ItemStack getWorldItemStack(IBlockAccess world){
-		return new ItemStack(getBlock(world), 1, getBlockMeta(world));
+	public boolean blockExists(IBlockAccess world){
+		return world.isAirBlock(convertToBlockPos());
 	}
 
 	public boolean setBlock(World world, Block block) {
-		return setBlock(world, block, 0);
+		return setBlockState(world, block.getActualState(getBlockState(world), world, convertToBlockPos()));
 	}
 
-	public boolean setBlock(World world, Block block, int metadata) {
-		return world.setBlock(x, y, z, block, metadata, 3);
+	public boolean setBlockState(World world, IBlockState blockState){
+		return world.setBlockState(convertToBlockPos(), blockState);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T getTileEntity(IBlockAccess world, Class<T> targetClass) {
-
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (targetClass.isInstance(te)) {
-			return (T) te;
-		} else {
-			return null;
-		}
-	}
-
-	public static TileEntity getTileEntityRaw(World world, int x, int y, int z) {
-
-		if (!world.blockExists(x, y, z)) {
-			return null;
-		}
-		return world.getChunkFromBlockCoords(x, z).getTileEntityUnsafe(x & 15, y, z & 15);
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T getTileEntityRaw(World world, int x, int y, int z, Class<T> targetClass) {
-
-		TileEntity te = getTileEntityRaw(world, x, y, z);
-		if (targetClass.isInstance(te)) {
-			return (T) te;
-		} else {
-			return null;
-		}
-	}
-
-	public static boolean blockExists(TileEntity start, ForgeDirection dir) {
-
-		final int x = start.xCoord + dir.offsetX, y = start.yCoord + dir.offsetY, z = start.zCoord + dir.offsetZ;
-		return start.getWorldObj().blockExists(x, y, z);
-	}
-
-	public static TileEntity getAdjacentTileEntity(TileEntity start, ForgeDirection direction) {
-		BlockPosition p = new BlockPosition(start);
-		p.orientation = direction;
-		p.moveForwards(1);
-		return start.getWorldObj().getTileEntity(p.x, p.y, p.z);
-	}
-
-	public static <T> T getAdjacentTileEntity(TileEntity start, ForgeDirection direction, Class<T> targetClass) {
-		TileEntity te = getAdjacentTileEntity(start, direction);
-		if (targetClass.isInstance(te)) {
-			return (T) te;
-		} else {
-			return null;
-		}
+	public void markDirty(World world){
+		Chunk chunk = world.getChunkFromBlockCoords(convertToBlockPos());
+		chunk.setChunkModified();
 	}
 }

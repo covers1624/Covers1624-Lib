@@ -1,22 +1,19 @@
 package covers1624.lib.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class BlockUtils {
 
-	//TODO add a BlockPosition Variant to all methods.
-
+	@Deprecated
 	public static void markBlockDirty(World world, int x, int y, int z) {
-		if (world.blockExists(x, y, z)) {
-			world.getChunkFromBlockCoords(x, z).setChunkModified();
-		}
+		//if (world.blockExists(x, y, z)) {
+		//	world.getChunkFromBlockCoords(x, z).setChunkModified();
+		//}
 	}
 
-	public static Block getBlock(World world, int x, int y, int z) {
-		return world.getBlock(x, y, z);
-	}
-
+	@Deprecated
 	public static void updateIndirectNeighbors(World world, int x, int y, int z, Block block) {
 		if (!world.isRemote) {
 			for (int i = -3; i <= 3; i++) {
@@ -35,46 +32,35 @@ public class BlockUtils {
 		}
 	}
 
+	@Deprecated
 	public static void notifyBlock(World world, int x, int y, int z, Block blockToUpdate) {
-		Block block = getBlock(world, x, y, z);
+		//Block block = getBlock(world, x, y, z);
 
-		if (block != null) {
-			block.onNeighborBlockChange(world, x, y, z, blockToUpdate);
-		}
+		//if (block != null) {
+			//block.onNeighborBlockChange(world, x, y, z, blockToUpdate);
+		//}
 	}
 
-	public static boolean setBlockMetadata(World world, int x, int y, int z, int meta) {
-		return world.setBlockMetadataWithNotify(x, y, z, meta, 2);
-	}
-
-	public static boolean setBlock(World world, int x, int y, int z, Block block, int meta) {
-		return world.setBlock(x, y, z, block, meta, 3);
-	}
-
-	public static boolean setBlock(World world, BlockPosition blockPos, Block block, int meta){
-		return setBlock(world, blockPos.x, blockPos.y, blockPos.y, block, meta);
-	}
-
-	public static int rotToSide(int var0) {
-		switch (var0) {
+	public static EnumFacing entityRotationToSide(int rotation) {
+		switch (rotation) {
 		case 0:
-			return 5;
+			return EnumFacing.EAST;
 
 		case 1:
-			return 3;
+			return EnumFacing.SOUTH;
 
 		case 2:
-			return 4;
+			return EnumFacing.WEST;
 
 		default:
-			return 2;
+			return EnumFacing.NORTH;
 		}
 	}
 
 	public static void playNoise(World world, int x, int y, int z, Block block) {
-		String effectName = block.stepSound.getStepResourcePath();
-		float volume = (block.stepSound.getVolume() + 1.0F) / 2.0F;
-		float pitch = block.stepSound.getPitch() * 0.8F;
+		String effectName = block.stepSound.getStepSound();
+		float volume = (block.stepSound.volume + 1.0F) / 2.0F;
+		float pitch = block.stepSound.frequency * 0.8F;
 		world.playSoundEffect(x + 0.5F, y + 0.5F, z + 0.5F, effectName, volume, pitch);
 	}
 }
