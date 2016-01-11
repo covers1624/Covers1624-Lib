@@ -92,6 +92,11 @@ public class BlockPosition{
 		return orientation;
 	}
 
+	public void setOrientation(EnumFacing orientation){
+		this.orientation = orientation;
+		this.hasOrientation = true;
+	}
+
 	/*
 		Orientation Manipulation.
 	 */
