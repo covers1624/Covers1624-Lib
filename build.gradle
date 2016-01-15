@@ -23,6 +23,7 @@ minecraft {
     runDir = "run"
 	
 	mappings = "stable_20"
+	makeObfSourceJar = false
 }
 
 String buildNo = "unknown"
@@ -42,16 +43,24 @@ jar {
 dependencies {
 }
 
-task deobfJar(type: Jar, dependsOn: 'jar') {
+task deobfJar(type: Jar) {
 	from (sourceSets.main.output) {
 		classifier = "deobf"
 	}
 }
 
+task srcJar(type: Jar) {
+	from (sourceSets.main.allSource) {
+		classifier = "sources"
+	}
+}
+
 build.dependsOn deobfJar
+deobfJar.dependsOn srcJar
 
 artifacts {
 	archives deobfJar
+	archives srcJar
 }
 
 processResources{
