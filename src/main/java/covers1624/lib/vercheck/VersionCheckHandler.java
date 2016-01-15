@@ -5,8 +5,7 @@ package covers1624.lib.vercheck;
  */
 public class VersionCheckHandler {
 
-
-	private void parseVersionInfo(){
+	private void parseVersionInfo() {
 
 	}
 

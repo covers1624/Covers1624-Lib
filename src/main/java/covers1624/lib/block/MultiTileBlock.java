@@ -1,6 +1,5 @@
 package covers1624.lib.block;
 
-import covers1624.lib.Covers1624Lib;
 import covers1624.lib.item.MultiTileItem;
 import covers1624.lib.util.LogHelper;
 import net.minecraft.block.BlockContainer;
@@ -69,7 +68,7 @@ public class MultiTileBlock extends BlockContainer {
 	public TileEntity createNewTileEntity(World world, int meta) {
 		try {
 			return tileEntityMap[meta].getDeclaredConstructor(new Class[0]).newInstance();
-		} catch (Exception e){
+		} catch (Exception e) {
 			LogHelper.fatal("Unable to create tile with the MetaData of %s.", meta);
 			return null;
 		}

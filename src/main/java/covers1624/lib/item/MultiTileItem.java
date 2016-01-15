@@ -11,13 +11,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by covers1624 on 10/10/2015}.
  * This class belongs with MultiTileBlock.
  */
-public class MultiTileItem extends ItemBlock{
-	private ArrayList<Integer> valid = new ArrayList<Integer>();
+public class MultiTileItem extends ItemBlock {
 	private HashMap<Integer, String> names = new HashMap<Integer, String>();
 
 	public MultiTileItem(Block block) {
@@ -31,9 +31,8 @@ public class MultiTileItem extends ItemBlock{
 		return meta;
 	}
 
-	public void registerSubItem(int meta, String unlocName){
+	public void registerSubItem(int meta, String unlocName) {
 		names.put(meta, unlocName);
-		valid.add(meta);
 	}
 
 	@Override
@@ -41,12 +40,12 @@ public class MultiTileItem extends ItemBlock{
 		return names.get(stack.getItemDamage());
 	}
 
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List items) {
-		for (Integer integer : valid){
-			items.add(new ItemStack(this, 1, integer));
+		for (Map.Entry<Integer, String> entry : names.entrySet()) {
+			items.add(new ItemStack(this, 1, entry.getKey()));
 		}
 	}
 }

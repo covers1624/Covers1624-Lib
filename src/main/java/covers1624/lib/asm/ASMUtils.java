@@ -22,13 +22,13 @@ public class ASMUtils {
 		boolean obf = true;
 		try {
 			obf = Launch.classLoader.getClassBytes("net.minecraft.world.World") == null;
-		} catch (IOException ignored){
+		} catch (IOException ignored) {
 		}
 		obfuscated = obf;
 	}
 
-	public static void printMethods(ClassNode classNode){
-		for (MethodNode node : classNode.methods){
+	public static void printMethods(ClassNode classNode) {
+		for (MethodNode node : classNode.methods) {
 			String parmString = buildParmString(node);
 			LogHelper.info("ACC: %s, Name: %s, Desc: %s, Parms: %s", node.access, node.name, node.desc, parmString);
 		}
@@ -45,7 +45,7 @@ public class ASMUtils {
 		return parms != null ? parms : "None";
 	}
 
-	public static void printMethodNodeInstructions(MethodNode methodNode){
+	public static void printMethodNodeInstructions(MethodNode methodNode) {
 		printInsnList(methodNode.instructions);
 	}
 

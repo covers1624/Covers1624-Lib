@@ -15,7 +15,7 @@ public class RaytraceHelper {
 		Vec3 vec33 = vec3.addVector(vec32.xCoord * 5.0D, vec32.yCoord * 5.0D, vec32.zCoord * 5.0D);
 		Block block = blockPos.getBlock(world);
 		if (block != null) {
-			return block.collisionRayTrace(world, blockPos.convertToBlockPos(), vec3, vec33);
+			return block.collisionRayTrace(world, blockPos.toBlockPos(), vec3, vec33);
 		}
 		return null;
 	}

@@ -3,12 +3,12 @@ package covers1624.lib;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import covers1624.lib.handler.ConfigurationHandler;
+import covers1624.lib.proxy.CommonProxy;
 import covers1624.lib.util.ItemUtils;
-import covers1624.lib.util.LogHelper;
 import net.minecraftforge.fml.common.DummyModContainer;
 import net.minecraftforge.fml.common.LoadController;
-import net.minecraftforge.fml.common.MetadataCollection;
 import net.minecraftforge.fml.common.ModMetadata;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.versioning.VersionParser;
@@ -21,6 +21,8 @@ import java.util.Map;
 public class Covers1624Lib extends DummyModContainer implements IFMLLoadingPlugin {
 
 	public static ModMetadata modMetadata = new ModMetadata();
+	@SidedProxy(clientSide = "covers1624.lib.proxy.ClientProxy", serverSide = "covers1624.lib.proxy.CommonProxy")
+	public static CommonProxy proxy;
 
 	static {
 		modMetadata.modId = "Covers1624Core";
@@ -33,7 +35,6 @@ public class Covers1624Lib extends DummyModContainer implements IFMLLoadingPlugi
 	public Covers1624Lib() {
 		super(modMetadata);
 	}
-
 
 	@Override
 	public String[] getASMTransformerClass() {
@@ -68,13 +69,12 @@ public class Covers1624Lib extends DummyModContainer implements IFMLLoadingPlugi
 
 	@Subscribe
 	public void preInit(FMLPreInitializationEvent event) {
-
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+		proxy.registerEvents();
 	}
 
 	@Subscribe
 	public void postInit(FMLPostInitializationEvent event) {
-		ItemUtils.readOres();
 	}
 
 	@Override

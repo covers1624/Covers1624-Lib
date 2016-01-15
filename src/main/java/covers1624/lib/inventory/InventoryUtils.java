@@ -1,6 +1,5 @@
 package covers1624.lib.inventory;
 
-import covers1624.lib.Covers1624Lib;
 import covers1624.lib.util.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -27,7 +26,7 @@ public class InventoryUtils {
 		}
 	}
 
-	public static void printSlotsListed(Container container){
+	public static void printSlotsListed(Container container) {
 		LogHelper.info(container.inventorySlots.size());
 	}
 
@@ -79,10 +78,12 @@ public class InventoryUtils {
 			if (slot instanceof OutputSlot) {
 				continue;
 			}
-			if (!slot.isItemValid(stackToShift))
+			if (!slot.isItemValid(stackToShift)) {
 				continue;
-			if (shiftItemStack(container, stackToShift, machineIndex, machineIndex + 1))
+			}
+			if (shiftItemStack(container, stackToShift, machineIndex, machineIndex + 1)) {
 				return true;
+			}
 		}
 		return false;
 	}

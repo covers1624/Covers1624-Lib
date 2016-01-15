@@ -15,7 +15,7 @@ import net.minecraft.world.chunk.Chunk;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockPosition{
+public class BlockPosition {
 	public int x;
 	public int y;
 	public int z;
@@ -80,19 +80,19 @@ public class BlockPosition{
 		return new Vec3i(x, y, z);
 	}
 
-	public BlockPos convertToBlockPos() {
+	public BlockPos toBlockPos() {
 		return new BlockPos(x, y, z);
 	}
 
-	public boolean hasOrientation(){
+	public boolean hasOrientation() {
 		return hasOrientation;
 	}
 
-	public EnumFacing getOrientation(){
+	public EnumFacing getOrientation() {
 		return orientation;
 	}
 
-	public void setOrientation(EnumFacing orientation){
+	public void setOrientation(EnumFacing orientation) {
 		this.orientation = orientation;
 		this.hasOrientation = true;
 	}
@@ -283,11 +283,11 @@ public class BlockPosition{
 	}
 
 	public TileEntity getTileEntity(IBlockAccess world) {
-		return world.getTileEntity(convertToBlockPos());
+		return world.getTileEntity(toBlockPos());
 	}
 
-	public IBlockState getBlockState(IBlockAccess world){
-		return world.getBlockState(convertToBlockPos());
+	public IBlockState getBlockState(IBlockAccess world) {
+		return world.getBlockState(toBlockPos());
 	}
 
 	public Block getBlock(IBlockAccess world) {
@@ -300,20 +300,20 @@ public class BlockPosition{
 		return new ItemStack(block, 1, block.getMetaFromState(getBlockState(world)));
 	}
 
-	public boolean blockExists(IBlockAccess world){
-		return world.isAirBlock(convertToBlockPos());
+	public boolean blockExists(IBlockAccess world) {
+		return world.isAirBlock(toBlockPos());
 	}
 
 	public boolean setBlock(World world, Block block) {
-		return setBlockState(world, block.getActualState(getBlockState(world), world, convertToBlockPos()));
+		return setBlockState(world, block.getActualState(getBlockState(world), world, toBlockPos()));
 	}
 
-	public boolean setBlockState(World world, IBlockState blockState){
-		return world.setBlockState(convertToBlockPos(), blockState);
+	public boolean setBlockState(World world, IBlockState blockState) {
+		return world.setBlockState(toBlockPos(), blockState);
 	}
 
-	public void markDirty(World world){
-		Chunk chunk = world.getChunkFromBlockCoords(convertToBlockPos());
+	public void markDirty(World world) {
+		Chunk chunk = world.getChunkFromBlockCoords(toBlockPos());
 		chunk.setChunkModified();
 	}
 }

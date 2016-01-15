@@ -1,16 +1,7 @@
 package covers1624.lib.network;
 
-import covers1624.lib.Covers1624Lib;
 import covers1624.lib.handler.ConfigurationHandler;
 import covers1624.lib.util.LogHelper;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
-import net.minecraftforge.fml.common.network.FMLOutboundHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
@@ -21,6 +12,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 
 import java.util.*;
