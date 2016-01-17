@@ -3,45 +3,42 @@ package covers1624.lib.math;
 import java.util.Formatter;
 import java.util.Locale;
 
-public class Vector3 {
-	public double x;
-	public double y;
-	public double z;
+/**
+ * Created by covers1624 on 1/12/2016.
+ */
+public class Vector3F {
+	public float x;
+	public float y;
+	public float z;
 
-	public Vector3() {
-		this(0, 0, 0);
+	public Vector3F() {
 	}
 
-	public Vector3(double x, double y, double z) {
+	public Vector3F(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public Vector3(Vector3 vec) {
+	public Vector3F(Vector3F vec) {
 		this.x = vec.x;
 		this.y = vec.y;
 		this.z = vec.z;
 	}
 
-	@Override
-	public Object clone() {
-		return new Vector3(this);
-	}
-
-	public void set(double x, double y, double z) {
+	public void set(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public void set(Vector3 vec) {
+	public void set(Vector3F vec) {
 		this.x = vec.x;
 		this.y = vec.y;
 		this.z = vec.z;
 	}
 
-	public void add(double x, double y, double z) {
+	public void add(float x, float y, float z) {
 		this.x += x;
 		this.y += y;
 		this.z += z;
@@ -53,7 +50,7 @@ public class Vector3 {
 		this.z += vec.z;
 	}
 
-	public void subtract(double x, double y, double z) {
+	public void subtract(float x, float y, float z) {
 		this.x -= x;
 		this.y -= y;
 		this.z -= z;

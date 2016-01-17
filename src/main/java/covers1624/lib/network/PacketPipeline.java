@@ -2,6 +2,7 @@ package covers1624.lib.network;
 
 import covers1624.lib.Covers1624Lib;
 import covers1624.lib.handler.ConfigurationHandler;
+import covers1624.lib.util.LogHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
 import cpw.mods.fml.common.network.FMLOutboundHandler;
@@ -43,17 +44,17 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 	 */
 	public boolean registerPacket(Class<? extends AbstractPacket> clazz) {
 		if (this.packets.size() > 256) {
-			Covers1624Lib.logger.fatal("Failed to register packet, The array is full.");
+			LogHelper.fatal("Failed to register packet, The array is full.");
 			return false;
 		}
 
 		if (this.packets.contains(clazz)) {
-			Covers1624Lib.logger.fatal("Packet Allready Registered: " + clazz.toString());
+			LogHelper.fatal("Packet Allready Registered: " + clazz.toString());
 			return false;
 		}
 
 		if (this.isPostInitialised) {
-			Covers1624Lib.logger.fatal("Already started PostInit, You are doing it wrong, Add Packets any time before PostInit.");
+			LogHelper.fatal("Already started PostInit, You are doing it wrong, Add Packets any time before PostInit.");
 			return false;
 		}
 
@@ -79,7 +80,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 		String noBytes = Double.valueOf(bytes.length).toString();
 		String kBytes = Double.valueOf(bytes.length / 1024).toString();
 		String mBytes = Double.valueOf((bytes.length / 1024) / 1024).toString();
-		Covers1624Lib.logger.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Writing packet to network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
+		LogHelper.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Writing packet to network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
 	}
 
 	// In line decoding and handling of the packet
@@ -116,7 +117,7 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
 		String noBytes = Double.valueOf(bytes.length).toString();
 		String kBytes = Double.valueOf(bytes.length / 1024).toString();
 		String mBytes = Double.valueOf((bytes.length / 1024) / 1024).toString();
-		Covers1624Lib.logger.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Reading packet from network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
+		LogHelper.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Reading packet from network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
 
 	}
 

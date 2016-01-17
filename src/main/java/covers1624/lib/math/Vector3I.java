@@ -3,22 +3,24 @@ package covers1624.lib.math;
 import java.util.Formatter;
 import java.util.Locale;
 
-public class Vector3 {
-	public double x;
-	public double y;
-	public double z;
+/**
+ * Created by covers1624 on 1/12/2016.
+ */
+public class Vector3I {
+	public int x;
+	public int y;
+	public int z;
 
-	public Vector3() {
-		this(0, 0, 0);
+	public Vector3I() {
 	}
 
-	public Vector3(double x, double y, double z) {
+	public Vector3I(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public Vector3(Vector3 vec) {
+	public Vector3I(Vector3I vec) {
 		this.x = vec.x;
 		this.y = vec.y;
 		this.z = vec.z;
@@ -26,44 +28,45 @@ public class Vector3 {
 
 	@Override
 	public Object clone() {
-		return new Vector3(this);
+		return new Vector3I(this);
 	}
 
-	public void set(double x, double y, double z) {
+	public void set(int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public void set(Vector3 vec) {
+	public void set(Vector3I vec) {
 		this.x = vec.x;
 		this.y = vec.y;
 		this.z = vec.z;
 	}
 
-	public void add(double x, double y, double z) {
+	public void add(int x, int y, int z) {
 		this.x += x;
 		this.y += y;
 		this.z += z;
 	}
 
-	public void add(Vector3 vec) {
+	public void add(Vector3I vec) {
 		this.x += vec.x;
 		this.y += vec.y;
 		this.z += vec.z;
 	}
 
-	public void subtract(double x, double y, double z) {
+	public void subtract(Vector3I vec) {
+		this.x -= vec.x;
+		this.y -= vec.y;
+		this.z -= vec.z;
+	}
+
+	public void subtract(int x, int y, int z) {
 		this.x -= x;
 		this.y -= y;
 		this.z -= z;
 	}
 
-	public void subtract(Vector3 vec) {
-		this.x -= vec.x;
-		this.y -= vec.y;
-		this.z -= vec.z;
-	}
 
 	@SuppressWarnings("resource")
 	@Override
@@ -71,7 +74,7 @@ public class Vector3 {
 		StringBuilder var1 = new StringBuilder();
 		Formatter var2 = new Formatter(var1, Locale.US);
 		var2.format("Vector:\n");
-		var2.format("  < %f %f %f >\n", this.x, this.y, this.z);
+		var2.format("  < %s %s %s >\n", this.x, this.y, this.z);
 		return var1.toString();
 	}
 }

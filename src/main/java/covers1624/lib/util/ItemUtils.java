@@ -2,37 +2,53 @@ package covers1624.lib.util;
 
 import covers1624.lib.Covers1624Lib;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeMap;
 
 public class ItemUtils {
-	public static ItemStackComparator itemStackComparator = new ItemStackComparator();
-	private static TreeMap<ItemStack, String> oreMap = new TreeMap<ItemStack, String>(itemStackComparator);
 
 	/**
-	 * Drops an item in the world at the given X, Y, Z.
+	 * Drops an item in the world at the given BlockPosition
 	 * Will only drop the item on the server.
 	 *
-	 * @param world World to drop the item.
-	 * @param x     X Location
-	 * @param y     Y Location
-	 * @param z     Z Location
-	 * @param stack ItemStack to drop.
+	 * @param world    World to drop the item.
+	 * @param position Location to drop item.
+	 * @param stack    ItemStack to drop.
 	 */
-	public static void dropItem(World world, int x, int y, int z, ItemStack stack) {
+	public static void dropItem(World world, BlockPosition position, ItemStack stack) {
 		if (!world.isRemote) {
 			double xVelocity = world.rand.nextFloat() * 0.7D + (1.0D - 0.7D) * 0.5D;
 			double yVelocity = world.rand.nextFloat() * 0.7D + (1.0D - 0.7D) * 0.5D;
 			double zVelocity = world.rand.nextFloat() * 0.7D + (1.0D - 0.7D) * 0.5D;
-			EntityItem entityItem = new EntityItem(world, x + xVelocity, y + yVelocity, z + zVelocity, stack);
+			EntityItem entityItem = new EntityItem(world, position.x + xVelocity, position.y + yVelocity, position.z + zVelocity, stack);
 			entityItem.delayBeforeCanPickup = 10;
 			world.spawnEntityInWorld(entityItem);
+		}
+	}
+
+	/**
+	 * Drops all the items in an IInventory on the ground.
+	 * Client safe.
+	 *
+	 * @param world     World to drop the item.
+	 * @param position  Location to drop item.
+	 * @param inventory IInventory to drop.
+	 */
+	public static void dropInventory(World world, BlockPosition position, IInventory inventory) {
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack stack = inventory.getStackInSlot(i);
+			if (stack != null && stack.stackSize > 0) {
+				dropItem(world, position, stack);
+			}
 		}
 	}
 
@@ -48,6 +64,45 @@ public class ItemUtils {
 			return new ItemStack(stack.getItem(), stackSize, stack.getItem().getDamage(stack));
 		}
 		return null;
+	}
+
+	public static void ejectItems(World world, BlockPosition pos, ArrayList<ItemStack> stacks, ForgeDirection dir) {
+		for (ItemStack stack : stacks) {
+			ejectItem(world, pos, stack, dir);
+		}
+	}
+
+	public static void ejectItem(World world, BlockPosition pos, ItemStack stack, ForgeDirection dir) {
+		pos.step(dir);
+		EntityItem entity = new EntityItem(world, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, stack);
+		entity.motionX = 0.0;
+		entity.motionY = 0.0;
+		entity.motionZ = 0.0;
+
+		switch (dir) {
+		case DOWN:
+			entity.motionY = -0.3;
+			break;
+		case UP:
+			entity.motionY = 0.3;
+			break;
+		case NORTH:
+			entity.motionZ = -0.3;
+			break;
+		case SOUTH:
+			entity.motionZ = 0.3;
+			break;
+		case WEST:
+			entity.motionX = -0.3;
+			break;
+		case EAST:
+			entity.motionX = 0.3;
+			break;
+		default:
+		}
+
+		entity.delayBeforeCanPickup = 10;
+		world.spawnEntityInWorld(entity);
 	}
 
 	/**
@@ -73,55 +128,4 @@ public class ItemUtils {
 		int itemStack2ID = Item.getIdFromItem(stack1.getItem());
 		return itemStack1ID != itemStack2ID ? itemStack1ID - itemStack2ID : (stack1.getItemDamage() == stack2.getItemDamage() ? 0 : (stack1.getItem().getHasSubtypes() ? stack1.getItemDamage() - stack2.getItemDamage() : 0));
 	}
-
-	private static void registerOre(String name, ItemStack stack) {
-		oreMap.put(stack, name);
-	}
-
-	public static void readOres() {
-		for (String name : OreDictionary.getOreNames()) {
-			for (ItemStack stack : OreDictionary.getOres(name)) {
-				registerOre(name, stack);
-			}
-		}
-		if (oreMap.isEmpty()) {
-			Covers1624Lib.logger.fatal("Something is messing with the OreDictionary and is causing me to be unable to get all registered items..");
-		}
-	}
-
-	public static String getOreClass(ItemStack stack) {
-		String name = oreMap.get(stack);
-		if (name != null) {
-			return name;
-		} else {
-			stack = new ItemStack(stack.getItem(), 1, OreDictionary.WILDCARD_VALUE);
-			return oreMap.get(stack);
-		}
-	}
-
-	public static String getOreClassSafe(ItemStack stack) {
-		String clazz = getOreClass(stack);
-		if (clazz != null) {
-			return clazz;
-		}
-		return "null";
-	}
-
-	public static boolean matchItemStackOre(ItemStack stack1, ItemStack stack2) {
-		String ore1 = getOreClass(stack1);
-		String ore2 = getOreClass(stack2);
-		return ore1 != null && ore2 != null && ore1.equals(ore2) || compareItemStack(stack1, stack2) == 0;
-	}
-
-	/**
-	 * Comparator used for the OreMap.
-	 */
-	private static class ItemStackComparator implements Comparator<ItemStack> {
-
-		@Override
-		public int compare(ItemStack stack1, ItemStack stack2) {
-			return compareItemStack(stack1, stack2);
-		}
-	}
-
 }

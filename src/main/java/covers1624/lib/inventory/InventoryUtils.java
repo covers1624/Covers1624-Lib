@@ -1,6 +1,7 @@
 package covers1624.lib.inventory;
 
 import covers1624.lib.Covers1624Lib;
+import covers1624.lib.util.LogHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -27,9 +28,10 @@ public class InventoryUtils {
 	}
 
 	public static void printSlotsListed(Container container){
-		Covers1624Lib.logger.info(container.inventorySlots.size());
+		LogHelper.info(container.inventorySlots.size());
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Slot addSlotToContainer(Container container, Slot slot) {
 		slot.slotNumber = container.inventorySlots.size();
 		//Covers1624Lib.logger.info(slot.slotNumber);
@@ -45,18 +47,18 @@ public class InventoryUtils {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack stackInSlot = slot.getStack();
 			originalStack = stackInSlot.copy();
-			if (slotIndex >= numSlots - 9 * 4 && tryShiftItem(container, stackInSlot, numSlots)) {
-				// NOOP
-			} else if (slotIndex >= numSlots - 9 * 4 && slotIndex < numSlots - 9) {
-				if (!shiftItemStack(container, stackInSlot, numSlots - 9, numSlots)) {
+			if (slotIndex < numSlots - 9 * 4 || !tryShiftItem(container, stackInSlot, numSlots)) {
+				if (slotIndex >= numSlots - 9 * 4 && slotIndex < numSlots - 9) {
+					if (!shiftItemStack(container, stackInSlot, numSlots - 9, numSlots)) {
+						return null;
+					}
+				} else if (slotIndex >= numSlots - 9 && slotIndex < numSlots) {
+					if (!shiftItemStack(container, stackInSlot, numSlots - 9 * 4, numSlots - 9)) {
+						return null;
+					}
+				} else if (!shiftItemStack(container, stackInSlot, numSlots - 9 * 4, numSlots)) {
 					return null;
 				}
-			} else if (slotIndex >= numSlots - 9 && slotIndex < numSlots) {
-				if (!shiftItemStack(container, stackInSlot, numSlots - 9 * 4, numSlots - 9)) {
-					return null;
-				}
-			} else if (!shiftItemStack(container, stackInSlot, numSlots - 9 * 4, numSlots)) {
-				return null;
 			}
 			slot.onSlotChange(stackInSlot, originalStack);
 			if (stackInSlot.stackSize <= 0) {
@@ -129,16 +131,7 @@ public class InventoryUtils {
 	}
 
 	public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
-		if (stack1 == null || stack2 == null) {
-			return false;
-		}
-		if (!stack1.isItemEqual(stack2)) {
-			return false;
-		}
-		if (!ItemStack.areItemStackTagsEqual(stack1, stack2)) {
-			return false;
-		}
-		return true;
+		return !(stack1 == null || stack2 == null) && stack1.isItemEqual(stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
 
 	}
 }

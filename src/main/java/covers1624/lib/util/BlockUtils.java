@@ -1,7 +1,11 @@
 package covers1624.lib.util;
 
+import covers1624.lib.math.Vector3;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class BlockUtils {
 
@@ -43,31 +47,64 @@ public class BlockUtils {
 		}
 	}
 
-	public static boolean setBlockMetadata(World world, int x, int y, int z, int meta) {
-		return world.setBlockMetadataWithNotify(x, y, z, meta, 2);
+	/**
+	 * Generates a bounding box.
+	 *
+	 * @param pos     MUST HAVE A ORIENTATION SET!
+	 * @param vector3 Size of the box.
+	 */
+	public static AxisAlignedBB getBox(BlockPosition pos, Vector3 vector3) {
+		double xMiddle = pos.x + 0.5D;
+		double yMiddle = pos.y + 0.5D;
+		double zMiddle = pos.z + 0.5D;
+		if (pos.orientation != ForgeDirection.UNKNOWN) {
+			switch (pos.orientation) {
+			case DOWN:
+				return  AxisAlignedBB.getBoundingBox(xMiddle - vector3.x, pos.y - vector3.z, zMiddle - vector3.x, xMiddle + vector3.x, pos.y + vector3.y, zMiddle + vector3.x);
+
+			case UP:
+				return AxisAlignedBB.getBoundingBox(xMiddle - vector3.x, pos.y + 1 - vector3.y, zMiddle - vector3.x, xMiddle + vector3.x, pos.y + 1 + vector3.z, zMiddle + vector3.x);
+
+			case NORTH:
+				return AxisAlignedBB.getBoundingBox(xMiddle - vector3.x, yMiddle - vector3.x, pos.z - vector3.z, xMiddle + vector3.x, yMiddle + vector3.x, pos.z + vector3.y);
+
+			case SOUTH:
+				return AxisAlignedBB.getBoundingBox(xMiddle - vector3.x, yMiddle - vector3.x, pos.z + 1 - vector3.y, xMiddle + vector3.x, yMiddle + vector3.x, pos.z + 1 + vector3.z);
+
+			case WEST:
+				return AxisAlignedBB.getBoundingBox(pos.x - vector3.z, yMiddle - vector3.x, zMiddle - vector3.x, pos.x + vector3.y, yMiddle + vector3.x, zMiddle + vector3.x);
+
+			case EAST:
+				return AxisAlignedBB.getBoundingBox(pos.x + 1 - vector3.y, yMiddle - vector3.x, zMiddle - vector3.x, pos.x + 1 + vector3.z, yMiddle + vector3.x, zMiddle + vector3.x);
+			default:
+				return null;
+			}
+		} else {
+			throw new RuntimeException("Orientation was not set!");
+		}
 	}
 
-	public static boolean setBlock(World world, int x, int y, int z, Block block, int meta) {
-		return world.setBlock(x, y, z, block, meta, 3);
+	public static boolean isEntityInRage(BlockPosition position, Entity entity, int range) {
+		return entity.getDistanceSq(position.x + 0.5D, position.y + 0.5D, position.z + 0.5D) <= range;
 	}
 
-	public static boolean setBlock(World world, BlockPosition blockPos, Block block, int meta){
-		return setBlock(world, blockPos.x, blockPos.y, blockPos.y, block, meta);
+	public static void fireLightUpdate(World world, BlockPosition position) {
+		world.func_147479_m(position.x, position.y, position.z);
 	}
 
-	public static int rotToSide(int var0) {
-		switch (var0) {
+	public static ForgeDirection entityRotationToSide(int rotation) {
+		switch (rotation) {
 		case 0:
-			return 5;
+			return ForgeDirection.EAST;
 
 		case 1:
-			return 3;
+			return ForgeDirection.SOUTH;
 
 		case 2:
-			return 4;
+			return ForgeDirection.WEST;
 
 		default:
-			return 2;
+			return ForgeDirection.NORTH;
 		}
 	}
 

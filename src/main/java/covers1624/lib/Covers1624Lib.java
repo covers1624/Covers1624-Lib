@@ -20,7 +20,6 @@ import java.util.Map;
 @IFMLLoadingPlugin.MCVersion("1.7.10")
 public class Covers1624Lib extends DummyModContainer implements IFMLLoadingPlugin {
 
-	public static LogHelper logger = new LogHelper("Covers1624 Lib");
 	public static ModMetadata modMetadata = new ModMetadata();
 
 	static {
@@ -69,13 +68,11 @@ public class Covers1624Lib extends DummyModContainer implements IFMLLoadingPlugi
 
 	@Subscribe
 	public void preInit(FMLPreInitializationEvent event) {
-
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 	}
 
 	@Subscribe
 	public void postInit(FMLPostInitializationEvent event) {
-		ItemUtils.readOres();
 	}
 
 	@Override
