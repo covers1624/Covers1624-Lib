@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  * This class allows blocks to easily add new Tile entity's with very little new implementation.
  * It also allows for the tile to open its gui when clicked.
  */
+@Deprecated
 public class MultiTileBlock extends BlockContainer {
 
 	private Class<? extends TileEntity>[] tileEntityMap = new Class[16];
