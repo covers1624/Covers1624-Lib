@@ -1,11 +1,14 @@
 package covers1624.lib.api.texture.provider;
 
-import net.minecraft.util.ResourceLocation;
-//TODO
-public interface IItemTextureProvider {
-	ResourceLocation getTextureName(int damage);
+import covers1624.lib.api.texture.Icon;
 
-	int getMaxMeta();
+public interface IItemTextureProvider extends ITextureProvider {
 
-	String getModID();
+	/**
+	 * Gets the item's icon from metadata.
+	 *
+	 * @param meta The items metadata.
+	 * @return The icon to use.
+	 */
+	Icon getIcon(int meta);
 }

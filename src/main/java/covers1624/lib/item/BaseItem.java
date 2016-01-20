@@ -1,6 +1,8 @@
 package covers1624.lib.item;
 
+import covers1624.lib.api.texture.Icon;
 import covers1624.lib.api.texture.provider.IItemTextureProvider;
+import covers1624.lib.client.registry.TextureRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
@@ -9,21 +11,18 @@ import net.minecraft.util.ResourceLocation;
  */
 public abstract class BaseItem extends Item implements IItemTextureProvider {
 
+	protected Icon itemIcon;
+
 	public BaseItem() {
 	}
 
 	@Override
-	public ResourceLocation getTextureName(int damage) {
-		return new ResourceLocation("missingno");
+	public Icon getIcon(int meta) {
+		return itemIcon;
 	}
 
 	@Override
-	public int getMaxMeta() {
-		return 1;
-	}
-
-	@Override
-	public String getModID() {
-		return "covers1624lib";
+	public void registerIcons(TextureRegistry textureRegistry) {
+		itemIcon = textureRegistry.registerIcon("missingno");
 	}
 }

@@ -53,7 +53,7 @@ public class ModelGenerator {
 	public static ArrayList<BlockFluidClassic> fluids = new ArrayList<BlockFluidClassic>();
 
 	public static HashMap<BlockFluidClassic, TextureAtlasSprite> fluidSpriteMap = new HashMap<BlockFluidClassic, TextureAtlasSprite>();
-	public static ArrayList<ItemIcon> itemIconList = new ArrayList<ItemIcon>();
+	//public static ArrayList<ItemIcon> itemIconList = new ArrayList<ItemIcon>();
 
 	@SubscribeEvent
 	public void textureStitchEvent(TextureStitchEvent.Pre event) {
@@ -65,21 +65,21 @@ public class ModelGenerator {
 			provider.registerIcons(textureRegistry);
 		}
 		//Items
-		for (Item item : items) {
-			if (item instanceof IItemTextureProvider) {
-				IItemTextureProvider itemTexture = (IItemTextureProvider) item;
-				for (int i = 0; i < itemTexture.getMaxMeta(); i++) {
-					ResourceLocation location = itemTexture.getTextureName(i);
-					TextureAtlasSprite texture = textureMap.getTextureExtry(location.toString());
-					if (texture == null) {
-						texture = new ExtendedTextureAtlasSprite(location.toString());
-						textureMap.setTextureEntry(location.toString(), texture);
-					}
-					ItemIcon icon = new ItemIcon(item, i, texture, location);
-					itemIconList.add(icon);
-				}
-			}
-		}
+		//for (Item item : items) {
+		//	if (item instanceof IItemTextureProvider) {
+		//		IItemTextureProvider itemTexture = (IItemTextureProvider) item;
+		//		for (int i = 0; i < itemTexture.getMaxMeta(); i++) {
+		//			ResourceLocation location = itemTexture.getTextureName(i);
+		//			TextureAtlasSprite texture = textureMap.getTextureExtry(location.toString());
+		//			if (texture == null) {
+		//				texture = new TextureAtlasSpriteAccessor(location.toString());
+		//				textureMap.setTextureEntry(location.toString(), texture);
+		//			}
+		//			ItemIcon icon = new ItemIcon(item, i, texture, location);
+		//			itemIconList.add(icon);
+		//		}
+		//	}
+		//}
 		//Fluids
 		for (BlockFluidClassic fluid : fluids) {
 			if (fluid instanceof IFluidTextureProvider) {
@@ -87,7 +87,7 @@ public class ModelGenerator {
 				ResourceLocation location = fluidTexture.getTextureName();
 				TextureAtlasSprite texture = textureMap.getTextureExtry(location.toString());
 				if (texture == null) {
-					texture = new ExtendedTextureAtlasSprite(location.toString());
+					texture = new TextureAtlasSpriteAccessor(location.toString());
 					textureMap.setTextureEntry(location.toString(), texture);
 				}
 				fluidSpriteMap.put(fluid, texture);
@@ -105,12 +105,11 @@ public class ModelGenerator {
 		for (Block block : blocks) {
 			LogHelper.trace("Generating Model for Object: " + Block.blockRegistry.getNameForObject(block));
 			if (block instanceof IBlockTextureProvider) {
-				IBlockTextureProvider textureProvider = (IBlockTextureProvider) block;
 				ArrayList<ItemStack> tempStacks = new ArrayList<ItemStack>();
 				block.getSubBlocks(Item.getItemFromBlock(block), block.getCreativeTabToDisplayOn(), tempStacks);
 				for (int i = 0; i < tempStacks.size(); i++) {
 					SimpleSmartModel blockModel = new SimpleSmartModel();
-					blockModel.handleBlockState(block.getDefaultState());
+					blockModel.handleBlockState(block.getStateFromMeta(i));
 					ModelResourceLocation modelLocation = getModelResourceLocation(block.getStateFromMeta(i));
 					event.modelRegistry.putObject(modelLocation, blockModel);
 
@@ -128,36 +127,20 @@ public class ModelGenerator {
 		for (Item item : items) {
 			if (item instanceof IItemTextureProvider) {
 				LogHelper.trace("Generating Model for Object: " + Item.itemRegistry.getNameForObject(item));
-				IItemTextureProvider textureProvider = (IItemTextureProvider) item;
-				for (int i = 0; i < textureProvider.getMaxMeta(); i++) {
-					TextureAtlasSprite texture = null;
-					ItemIcon itemIcon = null;
-					for (ItemIcon icon : itemIconList) {
-						if (icon.getMeta() == i && icon.getItem() == item) {
-							texture = icon.getSprite();
-							itemIcon = icon;
-							break;
-						}
-					}
-					if (texture == null) {
-						break;
-					}
-					ModelResourceLocation inventoryLocation;
-					if (textureProvider.getMaxMeta() == 1) {
-						inventoryLocation = getItemInventoryResourceLocation(item);
-					} else {
-						inventoryLocation = new ModelResourceLocation(textureProvider.getModID() + ":" + item.getUnlocalizedName(new ItemStack(item, 1, i)).substring(5), "inventory");
-					}
-					final TextureAtlasSprite finalSprite = texture;
+				ArrayList<ItemStack> tempStacks = new ArrayList<ItemStack>();
+				item.getSubItems(item, item.getCreativeTab(), tempStacks);
+				for (int i = 0; i < tempStacks.size(); i++) {
+					final TextureAtlasSprite texture = (TextureAtlasSprite) ((IItemTextureProvider) item).getIcon(i).getSprite();
+					ModelResourceLocation inventoryLocation = getItemInventoryResourceLocation(item, i);
 					Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
 						@Nullable
 						@Override
 						public TextureAtlasSprite apply(ResourceLocation input) {
-							return finalSprite;
+							return texture;
 						}
 					};
 					ImmutableList.Builder<ResourceLocation> builder = ImmutableList.builder();
-					builder.add(itemIcon.getLocation());
+					builder.add(new ResourceLocation(texture.getIconName()));
 					SimpleItemModel itemModel = new SimpleItemModel(builder.build());
 					IBakedModel model = itemModel.bake(ItemLayerModel.instance.getDefaultState(), DefaultVertexFormats.ITEM, textureGetter);
 					event.modelRegistry.putObject(inventoryLocation, model);
@@ -219,25 +202,25 @@ public class ModelGenerator {
 		fluidSpriteMap.clear();
 
 		//blockIconList.clear();
-		itemIconList.clear();
+		//itemIconList.clear();
 	}
 
-	@SideOnly(Side.CLIENT)
+	public static String getItemDomainName(Item item){
+		return Item.itemRegistry.getNameForObject(item).getResourceDomain();
+	}
+
 	public static ModelResourceLocation getModelResourceLocation(IBlockState state) {
 		return new ModelResourceLocation(Block.blockRegistry.getNameForObject(state.getBlock()), (new DefaultStateMapper()).getPropertyString(state.getProperties()));
 	}
 
-	@SideOnly(Side.CLIENT)
 	public static ModelResourceLocation getBlockInventoryResourceLocation(Block block) {
 		return new ModelResourceLocation(Block.blockRegistry.getNameForObject(block), "inventory");
 	}
 
-	@SideOnly(Side.CLIENT)
-	public static ModelResourceLocation getItemInventoryResourceLocation(Item block) {
-		return new ModelResourceLocation(Item.itemRegistry.getNameForObject(block), "inventory");
+	public static ModelResourceLocation getItemInventoryResourceLocation(Item item, int meta) {
+		return new ModelResourceLocation(getItemDomainName(item) + ":" + item.getUnlocalizedName(new ItemStack(item, 1, meta)).substring(5), "inventory");
 	}
 
-	@SideOnly(Side.CLIENT)
 	public static ResourceLocation getBlockResourceLocation(Block block) {
 		return Block.blockRegistry.getNameForObject(block);
 	}

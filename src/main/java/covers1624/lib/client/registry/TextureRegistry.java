@@ -1,7 +1,7 @@
 package covers1624.lib.client.registry;
 
 import covers1624.lib.api.texture.Icon;
-import covers1624.lib.client.model.ExtendedTextureAtlasSprite;
+import covers1624.lib.client.model.TextureAtlasSpriteAccessor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 
@@ -19,7 +19,7 @@ public class TextureRegistry {
 	public Icon registerIcon(String location) {
 		TextureAtlasSprite sprite = textureMap.getTextureExtry(location);
 		if (sprite == null){
-			sprite = ExtendedTextureAtlasSprite.createTexture(location);
+			sprite = TextureAtlasSpriteAccessor.createTexture(location);
 			textureMap.setTextureEntry(location, sprite);
 		}
 		Icon icon = new Icon();

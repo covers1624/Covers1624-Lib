@@ -6,9 +6,9 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by covers1624 on 1/20/2016.
  */
-public class ExtendedTextureAtlasSprite extends TextureAtlasSprite{
+public class TextureAtlasSpriteAccessor extends TextureAtlasSprite{
 
-	protected ExtendedTextureAtlasSprite(String spriteName) {
+	protected TextureAtlasSpriteAccessor(String spriteName) {
 		super(spriteName);
 	}
 
