@@ -1,84 +1,56 @@
 package covers1624.lib;
 
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
+import covers1624.lib.api.texture.Icon;
+import covers1624.lib.block.BaseBlock;
+import covers1624.lib.client.init.ClientInit;
 import covers1624.lib.handler.ConfigurationHandler;
+import covers1624.lib.item.BaseItem;
 import covers1624.lib.proxy.CommonProxy;
-import covers1624.lib.util.ItemUtils;
-import net.minecraftforge.fml.common.DummyModContainer;
-import net.minecraftforge.fml.common.LoadController;
-import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.fml.common.SidedProxy;
+import covers1624.lib.reference.Reference;
+import covers1624.lib.util.LogHelper;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.versioning.VersionParser;
-import net.minecraftforge.fml.common.versioning.VersionRange;
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
-import java.util.Map;
-
-@IFMLLoadingPlugin.MCVersion("1.8.9")
-public class Covers1624Lib extends DummyModContainer implements IFMLLoadingPlugin {
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = "[1.8.9]")
+public class Covers1624Lib{
 
 	public static ModMetadata modMetadata = new ModMetadata();
 	@SidedProxy(clientSide = "covers1624.lib.proxy.ClientProxy", serverSide = "covers1624.lib.proxy.CommonProxy")
 	public static CommonProxy proxy;
 
 	static {
-		modMetadata.modId = "Covers1624Core";
-		modMetadata.name = "Covers1624 Core";
+		modMetadata.modId = Reference.MOD_ID;
+		modMetadata.name = Reference.MOD_NAME;
 		modMetadata.description = "Contains Basic and some advanced Utility classes used by all my mods.";
-		modMetadata.version = "1.8.9-2.0";
+		modMetadata.version = Reference.MOD_VERSION;
 		modMetadata.authorList.add("covers1624");
 	}
 
-	public Covers1624Lib() {
-		super(modMetadata);
-	}
-
-	@Override
-	public String[] getASMTransformerClass() {
-		return new String[0];
-	}
-
-	@Override
-	public String getModContainerClass() {
-		return this.getClass().getName();
-	}
-
-	@Override
-	public String getSetupClass() {
-		return null;
-	}
-
-	@Override
-	public void injectData(Map<String, Object> data) {
-
-	}
-
-	@Override
-	public String getAccessTransformerClass() {
-		return null;
-	}
-
-	@Override
-	public boolean registerBus(EventBus bus, LoadController controller) {
-		bus.register(this);
-		return true;
-	}
-
-	@Subscribe
+	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		LogHelper.info("Init");
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
-		proxy.registerEvents();
+		//proxy.registerEvents();
+		Block tempBlock = new BaseBlock();
+		GameRegistry.registerBlock(tempBlock, "oreCopper");
+		ClientInit.getProxy().registerBlock(tempBlock);
+		Item item = new BaseItem();
+		GameRegistry.registerItem(item, "ingotCopper");
+		ClientInit.getProxy().registerItem(item);
+		Icon icon = new Icon();
 	}
 
-	@Subscribe
+	@Mod.EventHandler
+	public void init(FMLInitializationEvent event){
+		ClientInit.getProxy().init();
+	}
+
+	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-	}
-
-	@Override
-	public VersionRange acceptableMinecraftVersionRange() {
-		return VersionParser.parseRange("[1.8.9]");
 	}
 }

@@ -3,6 +3,8 @@ package covers1624.lib.util;
 import covers1624.lib.handler.ConfigurationHandler;
 import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by covers1624 on 10/3/2015}.
@@ -10,13 +12,16 @@ import org.apache.logging.log4j.Level;
  */
 public class LogHelper {
 
-	@Deprecated
-	public LogHelper(String name) {
+	private static Logger logger = LogManager.getLogger("Covers1624-Lib");
+
+	/**
+	 * Log with a supplied level.
+	 */
+	public static void log(Level logLevel, Object object) {
+		logger.log(logLevel, String.valueOf(object));
 	}
 
-	public static void log(Level logLevel, Object object) {
-		FMLLog.log("Covers1624-Lib", logLevel, String.valueOf(object));
-	}
+	//Standard log entries.
 
 	public static void all(Object object) {
 		log(Level.ALL, object);
@@ -51,9 +56,11 @@ public class LogHelper {
 
 	}
 
-	public void warn(Object object) {
+	public static void warn(Object object) {
 		log(Level.WARN, object);
 	}
+
+	//log with format.
 
 	public static void all(String object, Object... format) {
 		log(Level.ALL, String.format(object, format));
@@ -92,14 +99,26 @@ public class LogHelper {
 		log(Level.WARN, String.format(object, format));
 	}
 
-	public static void bigFatal(String format, Object... data) {
+	//Log with trace element.
+
+	public static void bigAll(String format, Object... data) {
 		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-		fatal("****************************************");
-		fatal("* " + format, data);
+		all("****************************************");
+		all("* " + format, data);
 		for (int i = 2; i < 8 && i < trace.length; i++) {
-			fatal("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+			all("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
 		}
-		fatal("****************************************");
+		all("****************************************");
+	}
+
+	public static void bigDebug(String format, Object... data) {
+		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+		debug("****************************************");
+		debug("* " + format, data);
+		for (int i = 2; i < 8 && i < trace.length; i++) {
+			debug("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+		}
+		debug("****************************************");
 	}
 
 	public static void bigError(String format, Object... data) {
@@ -112,4 +131,54 @@ public class LogHelper {
 		error("****************************************");
 	}
 
+
+	public static void bigFatal(String format, Object... data) {
+		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+		fatal("****************************************");
+		fatal("* " + format, data);
+		for (int i = 2; i < 8 && i < trace.length; i++) {
+			fatal("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+		}
+		fatal("****************************************");
+	}
+
+	public static void bigInfo(String format, Object... data) {
+		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+		info("****************************************");
+		info("* " + format, data);
+		for (int i = 2; i < 8 && i < trace.length; i++) {
+			info("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+		}
+		info("****************************************");
+	}
+
+	public static void bigOff(String format, Object... data) {
+		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+		off("****************************************");
+		off("* " + format, data);
+		for (int i = 2; i < 8 && i < trace.length; i++) {
+			off("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+		}
+		off("****************************************");
+	}
+
+	public static void bigTrace(String format, Object... data) {
+		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+		trace("****************************************");
+		trace("* " + format, data);
+		for (int i = 2; i < 8 && i < trace.length; i++) {
+			trace("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+		}
+		trace("****************************************");
+	}
+
+	public static void bigWarn(String format, Object... data) {
+		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+		warn("****************************************");
+		warn("* " + format, data);
+		for (int i = 2; i < 8 && i < trace.length; i++) {
+			warn("*  at %s%s", trace[i].toString(), i == 7 ? "..." : "");
+		}
+		warn("****************************************");
+	}
 }
