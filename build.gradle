@@ -35,25 +35,30 @@ if(System.getenv("BUILD_NUMBER") != null){
 }
 
 jar {
-    manifest {
-        attributes 'FMLCorePlugin': 'covers1624.lib.Covers1624Lib'
-		attributes 'FMLCorePluginContainsFMLMod': 'true'
-    }
+    classifier = "universal"
 }
 
 dependencies {
 }
 
-task deobfJar(type: Jar, dependsOn: 'jar') {
-	from sourceSets.main.output
-	from sourceSets.main.allSource
-	classifier "dev"
+task deobfJar(type: Jar) {
+	from (sourceSets.main.output){
+		classifier = "deobf"
+	}
+}
+
+task srcJar(type: Jar){
+	from (sourceSets.main.allSource){
+		classifier = "sources"
+	}
 }
 
 build.dependsOn deobfJar
+deobfJar.dependsOn srcJar
 
 artifacts {
 	archives deobfJar
+	archives srcJar
 }
 
 processResources{
