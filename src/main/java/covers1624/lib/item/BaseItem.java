@@ -1,5 +1,6 @@
 package covers1624.lib.item;
 
+import covers1624.lib.api.texture.ITextureRegistry;
 import covers1624.lib.api.texture.Icon;
 import covers1624.lib.api.texture.provider.IItemTextureProvider;
 import covers1624.lib.client.registry.TextureRegistry;
@@ -22,7 +23,7 @@ public abstract class BaseItem extends Item implements IItemTextureProvider {
 	}
 
 	@Override
-	public void registerIcons(TextureRegistry textureRegistry) {
+	public void registerIcons(ITextureRegistry  textureRegistry) {
 		itemIcon = textureRegistry.registerIcon("missingno");
 	}
 }

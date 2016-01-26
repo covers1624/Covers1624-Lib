@@ -1,5 +1,6 @@
 package covers1624.lib.block;
 
+import covers1624.lib.api.texture.ITextureRegistry;
 import covers1624.lib.api.texture.Icon;
 import covers1624.lib.api.texture.provider.IBlockTextureProvider;
 import covers1624.lib.client.registry.TextureRegistry;
@@ -31,7 +32,7 @@ public abstract class BaseBlock extends Block implements IBlockTextureProvider{
 	}
 
 	@Override
-	public void registerIcons(TextureRegistry textureRegistry) {
+	public void registerIcons(ITextureRegistry  textureRegistry) {
 		icon = textureRegistry.registerIcon("missingno");
 	}
 }

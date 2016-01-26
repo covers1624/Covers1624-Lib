@@ -1,6 +1,9 @@
 package covers1624.lib.client.model;
 
 import covers1624.lib.api.texture.Icon;
+import covers1624.lib.api.texture.provider.IBlockTextureProvider;
+import covers1624.lib.util.LogHelper;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
@@ -25,12 +28,17 @@ public class BasicBlockModel implements IPerspectiveAwareModel {
 	private static FaceBakery faceBakery = new FaceBakery();
 
 	private TextureAtlasSprite particleTexture;
-	private Icon[] icons;
+	private Icon[] icons = new Icon[6];
 
-	public BasicBlockModel(Icon[] icons) {
-		this(icons, EnumFacing.DOWN.getIndex());
+	public BasicBlockModel(Block block, int meta) {
+		for (EnumFacing face : EnumFacing.VALUES) {
+			icons[face.ordinal()] = ((IBlockTextureProvider) block).getIcon(meta, face);
+		}
+		particleTexture = (TextureAtlasSprite) icons[0].getSprite();
+
 	}
 
+	@Deprecated
 	public BasicBlockModel(Icon[] icons, int particleIndex) {
 		this.icons = icons;
 		particleTexture = (TextureAtlasSprite) icons[particleIndex].getSprite();
@@ -48,12 +56,12 @@ public class BasicBlockModel implements IPerspectiveAwareModel {
 		BlockPartFace face = new BlockPartFace(null, 0, "", uv);
 
 		ModelRotation modelRot = ModelRotation.X0_Y0;
-		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 0.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.DOWN.getIndex()].getSprite(), EnumFacing.DOWN, modelRot, null, true, true));//down
-		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 16.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.UP.getIndex()].getSprite(), EnumFacing.UP, modelRot, null, true, true));//up
-		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 0.0F), face, (TextureAtlasSprite) icons[EnumFacing.NORTH.getIndex()].getSprite(), EnumFacing.NORTH, modelRot, null, true, true));//north
-		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 16.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.SOUTH.getIndex()].getSprite(), EnumFacing.SOUTH, modelRot, null, true, true));//south
-		list.add(faceBakery.makeBakedQuad(new Vector3f(16.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.EAST.getIndex()].getSprite(), EnumFacing.EAST, modelRot, null, true, true));//east
-		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(0.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.WEST.getIndex()].getSprite(), EnumFacing.WEST, modelRot, null, true, true));//west
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 0.0F, 16.0F), face, (TextureAtlasSprite) icons[0].getSprite(), EnumFacing.DOWN, modelRot, null, true, true));//down
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 16.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[1].getSprite(), EnumFacing.UP, modelRot, null, true, true));//up
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 0.0F), face, (TextureAtlasSprite) icons[2].getSprite(), EnumFacing.NORTH, modelRot, null, true, true));//north
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 16.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[3].getSprite(), EnumFacing.SOUTH, modelRot, null, true, true));//south
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(0.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[4].getSprite(), EnumFacing.WEST, modelRot, null, true, true));//west
+		list.add(faceBakery.makeBakedQuad(new Vector3f(16.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[5].getSprite(), EnumFacing.EAST, modelRot, null, true, true));//east
 
 		return list;
 	}
@@ -83,7 +91,7 @@ public class BasicBlockModel implements IPerspectiveAwareModel {
 		return ItemCameraTransforms.DEFAULT;
 	}
 
-	@Override
+	//@Override
 	public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
 		if (cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON) {
 			return Pair.of((IFlexibleBakedModel) this, thirdPersonTransform);

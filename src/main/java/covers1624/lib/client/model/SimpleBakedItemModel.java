@@ -23,24 +23,33 @@ import javax.vecmath.Matrix4f;
 @SuppressWarnings("deprecation")
 public class SimpleBakedItemModel extends ItemLayerModel.BakedModel implements IPerspectiveAwareModel{
 
-	private final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
+	//private final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
+	private boolean isSword;
 
-	public SimpleBakedItemModel(ImmutableList<BakedQuad> quads, TextureAtlasSprite particle, VertexFormat format, ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms) {
+	public SimpleBakedItemModel(ImmutableList<BakedQuad> quads, TextureAtlasSprite particle, VertexFormat format, boolean isSword/*TODO better name.*/) {
 		super(quads, particle, format);
-		this.transforms = transforms;
+		//this.transforms = transforms;
+		this.isSword = isSword;
 	}
 
 	@Override
 	public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
 		if (cameraTransformType == ItemCameraTransforms.TransformType.FIRST_PERSON)
-			return Pair.of(IFlexibleBakedModel.class.cast(this), FIRST_PERSON_FIX);
+			return Pair.of(IFlexibleBakedModel.class.cast(this), isSword ? FIRST_PERSON_TEMP : FIRST_PERSON_FIX);
 
 		if (cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON) {
-			return Pair.of(IFlexibleBakedModel.class.cast(this), THIRD_PERSON_2D);
+			return Pair.of(IFlexibleBakedModel.class.cast(this), isSword ? THIRD_PERSON_TEMP : THIRD_PERSON_2D);
 		}
 		return Pair.of(IFlexibleBakedModel.class.cast(this), null);
 	}
 
 	public final Matrix4f THIRD_PERSON_2D = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(4.8F, 0, 0F), new Vector3f(0, .07F, -0.2F), new Vector3f(0.55F, 0.55F, 0.55F)));
 	public final Matrix4f FIRST_PERSON_FIX = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(0, 4, 0.5F), new Vector3f(-0.1F, 0.3F, 0.1F), new Vector3f(1.3F, 1.3F, 1.3F)));
+
+
+	public final Matrix4f THIRD_PERSON_TEMP = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0F, 0F)));
+	public final Matrix4f FIRST_PERSON_TEMP = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0F, 0F), new Vector3f(0F, 0F, 0F)));
+
+	public final Matrix4f THIRD_PERSON_SWORD = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(0F, 90F, -90F), new Vector3f(0, -0.0625F, 0F), new Vector3f(0.85F, 0.85F, 0.85F)));
+	public final Matrix4f FIRST_PERSON_SWORD = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(0, 4, 0.5F), new Vector3f(-0.1F, 0.3F, 0.1F), new Vector3f(1.7F, 1.7F, 1.7F)));
 }

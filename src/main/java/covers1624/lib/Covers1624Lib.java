@@ -1,7 +1,9 @@
 package covers1624.lib;
 
+import covers1624.lib.block.TempBlock;
 import covers1624.lib.client.init.ClientInit;
 import covers1624.lib.handler.ConfigurationHandler;
+import covers1624.lib.item.TempItem;
 import covers1624.lib.proxy.CommonProxy;
 import covers1624.lib.reference.Reference;
 import covers1624.lib.util.LogHelper;
@@ -11,6 +13,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Covers1624Lib {
@@ -31,6 +34,8 @@ public class Covers1624Lib {
 	public void preInit(FMLPreInitializationEvent event) {
 		LogHelper.info("Init");
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+		//GameRegistry.registerItem(new TempItem(), "tempItem");
+		//GameRegistry.registerBlock(new TempBlock(), "tempBlock");
 	}
 
 	@Mod.EventHandler

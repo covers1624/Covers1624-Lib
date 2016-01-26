@@ -3,19 +3,22 @@ package covers1624.lib.client.model;
 import covers1624.lib.api.texture.Icon;
 import covers1624.lib.api.texture.provider.IBlockTextureProvider;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ISmartBlockModel;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.util.vector.Vector3f;
 
 import javax.vecmath.Matrix4f;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,12 +27,30 @@ import java.util.List;
  */
 public class SimpleSmartModel implements ISmartBlockModel, IPerspectiveAwareModel {
 
-	private Icon[] icons = new Icon[6];
-	private BasicBlockModel model = null;
+	public static final Matrix4f thirdPersonTransform = ForgeHooksClient.getMatrix(new ItemTransformVec3f(new Vector3f(3.3F, 1, -0.3F), new Vector3f(0F, 0.1F, -0.15F), new Vector3f(0.35F, 0.35F, 0.35F)));
+	private static FaceBakery faceBakery = new FaceBakery();
 
-	//For inventory setup.
-	public void setModel(BasicBlockModel model){
-		this.model = model;
+	private TextureAtlasSprite particleTexture;
+
+	private Icon[] icons = new Icon[6];
+
+	public SimpleSmartModel(){
+
+	}
+
+	public SimpleSmartModel(Icon[] icons){
+		this.icons = icons;
+		particleTexture = (TextureAtlasSprite) icons[0].getSprite();
+	}
+
+	public void inventorySetup(IBlockState state){
+		if (state.getBlock() instanceof IBlockTextureProvider){
+			IBlockTextureProvider provider = (IBlockTextureProvider) state.getBlock();
+			for (EnumFacing face : EnumFacing.VALUES){
+				icons[face.ordinal()] = provider.getIcon(state.getBlock().getMetaFromState(state), face);
+			}
+			particleTexture = (TextureAtlasSprite) icons[0].getSprite();
+		}
 	}
 
 	@Override
@@ -39,74 +60,69 @@ public class SimpleSmartModel implements ISmartBlockModel, IPerspectiveAwareMode
 			for (EnumFacing face : EnumFacing.VALUES) {
 				icons[face.ordinal()] = textureProvider.getIcon(state, face);
 			}
-			model = new BasicBlockModel(icons);
-		}
-		return model;
-	}
-
-	@Override
-	public List<BakedQuad> getFaceQuads(EnumFacing face) {
-		if (model != null) {
-			return model.getFaceQuads(face);
-		}
-		return Collections.emptyList();
-	}
-
-	@Override
-	public List<BakedQuad> getGeneralQuads() {
-		if (model != null) {
-			return model.getGeneralQuads();
-		}
-		return Collections.emptyList();
-	}
-
-	@Override
-	public boolean isAmbientOcclusion() {
-		return model != null && model.isAmbientOcclusion();
-	}
-
-	@Override
-	public boolean isGui3d() {
-		return model != null && model.isGui3d();
-	}
-
-	@Override
-	public boolean isBuiltInRenderer() {
-		return model != null && model.isBuiltInRenderer();
-	}
-
-	@Override
-	public TextureAtlasSprite getParticleTexture() {
-		if (model != null) {
-			return model.getParticleTexture();
+			particleTexture = (TextureAtlasSprite) icons[0].getSprite();
+			return new SimpleSmartModel(icons);
 		}
 		return null;
 	}
 
 	@Override
+	public List<BakedQuad> getFaceQuads(EnumFacing face) {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<BakedQuad> getGeneralQuads() {
+		ArrayList<BakedQuad> list = new ArrayList<BakedQuad>();
+		BlockFaceUV uv = new BlockFaceUV(new float[] { 0.0F, 0.0F, 16.0F, 16.0F }, 0);
+		BlockPartFace face = new BlockPartFace(null, 0, "", uv);
+
+		ModelRotation modelRot = ModelRotation.X0_Y0;
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 0.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.DOWN.getIndex()].getSprite(), EnumFacing.DOWN, modelRot, null, true, true));//down
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 16.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.UP.getIndex()].getSprite(), EnumFacing.UP, modelRot, null, true, true));//up
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 0.0F), face, (TextureAtlasSprite) icons[EnumFacing.NORTH.getIndex()].getSprite(), EnumFacing.NORTH, modelRot, null, true, true));//north
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 16.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.SOUTH.getIndex()].getSprite(), EnumFacing.SOUTH, modelRot, null, true, true));//south
+		list.add(faceBakery.makeBakedQuad(new Vector3f(16.0F, 0.0F, 0.0F), new Vector3f(16.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.EAST.getIndex()].getSprite(), EnumFacing.EAST, modelRot, null, true, true));//east
+		list.add(faceBakery.makeBakedQuad(new Vector3f(0.0F, 0.0F, 0.0F), new Vector3f(0.0F, 16.0F, 16.0F), face, (TextureAtlasSprite) icons[EnumFacing.WEST.getIndex()].getSprite(), EnumFacing.WEST, modelRot, null, true, true));//west
+
+		return list;
+	}
+
+	@Override
+	public boolean isAmbientOcclusion() {
+		return true;
+	}
+
+	@Override
+	public boolean isGui3d() {
+		return true;
+	}
+
+	@Override
+	public boolean isBuiltInRenderer() {
+		return false;
+	}
+
+	@Override
+	public TextureAtlasSprite getParticleTexture() {
+		return particleTexture;
+	}
+
+	@Override
 	public ItemCameraTransforms getItemCameraTransforms() {
-		if (model != null) {
-			return model.getItemCameraTransforms();
-		}
 		return ItemCameraTransforms.DEFAULT;
 	}
 
 	@Override
 	public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-		if (model != null) {
-			return model.handlePerspective(cameraTransformType);
-		}
 		if (cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON) {
-			return Pair.of((IFlexibleBakedModel) this, BasicBlockModel.thirdPersonTransform);
+			return Pair.of((IFlexibleBakedModel) this, thirdPersonTransform);
 		}
 		return Pair.of((IFlexibleBakedModel) this, null);
 	}
 
 	@Override
 	public VertexFormat getFormat() {
-		if (model != null) {
-			return model.getFormat();
-		}
 		return Attributes.DEFAULT_BAKED_FORMAT;
 	}
 }

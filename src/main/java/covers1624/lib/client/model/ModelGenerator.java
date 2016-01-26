@@ -6,7 +6,7 @@ import covers1624.lib.api.texture.provider.IBlockTextureProvider;
 import covers1624.lib.api.texture.provider.IFluidTextureProvider;
 import covers1624.lib.api.texture.provider.IItemTextureProvider;
 import covers1624.lib.api.texture.provider.ITextureProvider;
-import covers1624.lib.client.icon.ItemIcon;
+import covers1624.lib.api.texture.transforms.ICustomTransform;
 import covers1624.lib.client.registry.TextureRegistry;
 import covers1624.lib.util.LogHelper;
 import net.minecraft.block.Block;
@@ -14,6 +14,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.ItemModelMesher;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -24,7 +26,9 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.RegistrySimple;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
@@ -32,10 +36,9 @@ import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.client.model.ModelFluid;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.BlockFluidClassic;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ public class ModelGenerator {
 
 	@SubscribeEvent
 	public void textureStitchEvent(TextureStitchEvent.Pre event) {
+		LogHelper.info("Stitch Event!");
 		TextureMap textureMap = event.map;
 		TextureRegistry textureRegistry = new TextureRegistry(event.map);
 		clear();
@@ -64,22 +68,6 @@ public class ModelGenerator {
 		for (ITextureProvider provider : textureProviders) {
 			provider.registerIcons(textureRegistry);
 		}
-		//Items
-		//for (Item item : items) {
-		//	if (item instanceof IItemTextureProvider) {
-		//		IItemTextureProvider itemTexture = (IItemTextureProvider) item;
-		//		for (int i = 0; i < itemTexture.getMaxMeta(); i++) {
-		//			ResourceLocation location = itemTexture.getTextureName(i);
-		//			TextureAtlasSprite texture = textureMap.getTextureExtry(location.toString());
-		//			if (texture == null) {
-		//				texture = new TextureAtlasSpriteAccessor(location.toString());
-		//				textureMap.setTextureEntry(location.toString(), texture);
-		//			}
-		//			ItemIcon icon = new ItemIcon(item, i, texture, location);
-		//			itemIconList.add(icon);
-		//		}
-		//	}
-		//}
 		//Fluids
 		for (BlockFluidClassic fluid : fluids) {
 			if (fluid instanceof IFluidTextureProvider) {
@@ -108,13 +96,15 @@ public class ModelGenerator {
 				ArrayList<ItemStack> tempStacks = new ArrayList<ItemStack>();
 				block.getSubBlocks(Item.getItemFromBlock(block), block.getCreativeTabToDisplayOn(), tempStacks);
 				for (int i = 0; i < tempStacks.size(); i++) {
+
 					SimpleSmartModel blockModel = new SimpleSmartModel();
 					blockModel.handleBlockState(block.getStateFromMeta(i));
 					ModelResourceLocation modelLocation = getModelResourceLocation(block.getStateFromMeta(i));
 					event.modelRegistry.putObject(modelLocation, blockModel);
 
 					ModelResourceLocation inventoryModelLocation = getBlockInventoryResourceLocation(block);
-					event.modelRegistry.putObject(inventoryModelLocation, blockModel);
+					BasicBlockModel inventoryModel = new BasicBlockModel(block, i);
+					event.modelRegistry.putObject(inventoryModelLocation, inventoryModel);
 
 					itemModelMesher.register(Item.getItemFromBlock(block), i, inventoryModelLocation);
 					itemModelMesher.register(Item.getItemFromBlock(block), i, modelLocation);
@@ -141,7 +131,7 @@ public class ModelGenerator {
 					};
 					ImmutableList.Builder<ResourceLocation> builder = ImmutableList.builder();
 					builder.add(new ResourceLocation(texture.getIconName()));
-					SimpleItemModel itemModel = new SimpleItemModel(builder.build());
+					SimpleItemModel itemModel = new SimpleItemModel(builder.build(), item instanceof ICustomTransform);
 					IBakedModel model = itemModel.bake(ItemLayerModel.instance.getDefaultState(), DefaultVertexFormats.ITEM, textureGetter);
 					event.modelRegistry.putObject(inventoryLocation, model);
 					itemModelMesher.register(item, i, inventoryLocation);
@@ -195,6 +185,18 @@ public class ModelGenerator {
 			event.modelRegistry.putObject(inventoryModelLocation, bakedModel);
 		}
 		LogHelper.info("Finished Model Generation in %s Ms.", String.valueOf(System.currentTimeMillis() - start));
+
+		if (event.modelRegistry instanceof RegistrySimple) {
+			for (ModelResourceLocation location : ((RegistrySimple<ModelResourceLocation, IBakedModel>) event.modelRegistry).getKeys()) {
+				String locationString = location.toString();
+				if (locationString.contains("diamond_sword")) {
+					LogHelper.info(location);
+					IBakedModel bakedModel = ForgeHooksClient.handleCameraTransforms(event.modelRegistry.getObject(location), ItemCameraTransforms.TransformType.THIRD_PERSON);
+					ItemCameraTransforms transforms = bakedModel.getItemCameraTransforms();
+					LogHelper.info("Transform: 3rd: %s, 1nd: %s", itemTransformToString(transforms.thirdPerson), itemTransformToString(transforms.firstPerson));
+				}
+			}
+		}
 	}
 
 	private static void clear() {
@@ -205,7 +207,11 @@ public class ModelGenerator {
 		//itemIconList.clear();
 	}
 
-	public static String getItemDomainName(Item item){
+	public static String itemTransformToString(ItemTransformVec3f transformVec3f){
+		return String.format("Rotation: %s, Translation: %s, Scale: %s", transformVec3f.rotation.toString(), transformVec3f.translation.toString(), transformVec3f.scale.toString());
+	}
+
+	public static String getItemDomainName(Item item) {
 		return Item.itemRegistry.getNameForObject(item).getResourceDomain();
 	}
 

@@ -18,10 +18,11 @@ import net.minecraftforge.client.model.*;
 public class SimpleItemModel extends ItemLayerModel{
 
 	private ImmutableList<ResourceLocation> textures;
-
-	public SimpleItemModel(ImmutableList<ResourceLocation> textures) {
+	private boolean isSword;
+	public SimpleItemModel(ImmutableList<ResourceLocation> textures, boolean isSword) {
 		super(textures);
 		this.textures = textures;
+		this.isSword = isSword;
 	}
 
 	@Override
@@ -33,7 +34,7 @@ public class SimpleItemModel extends ItemLayerModel{
 		}
 		TextureAtlasSprite particle = bakedTextureGetter.apply(textures.isEmpty() ? new ResourceLocation("missingno") : textures.get(0));
 		ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms = IPerspectiveAwareModel.MapWrapper.getTransforms(state);
-		IFlexibleBakedModel model = new SimpleBakedItemModel(builder.build(), particle, format, transforms);
+		IFlexibleBakedModel model = new SimpleBakedItemModel(builder.build(), particle, format, isSword);
 		if (transforms.isEmpty()){
 			return model;
 		}
