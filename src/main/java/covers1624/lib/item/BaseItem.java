@@ -3,9 +3,7 @@ package covers1624.lib.item;
 import covers1624.lib.api.texture.ITextureRegistry;
 import covers1624.lib.api.texture.Icon;
 import covers1624.lib.api.texture.provider.IItemTextureProvider;
-import covers1624.lib.client.registry.TextureRegistry;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by covers1624 on 1/20/2016.
@@ -23,7 +21,7 @@ public abstract class BaseItem extends Item implements IItemTextureProvider {
 	}
 
 	@Override
-	public void registerIcons(ITextureRegistry  textureRegistry) {
+	public void registerIcons(ITextureRegistry textureRegistry) {
 		itemIcon = textureRegistry.registerIcon("missingno");
 	}
 }

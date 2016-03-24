@@ -7,11 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.TreeMap;
 
 public class ItemUtils {
 

@@ -5,6 +5,8 @@ package covers1624.lib.api.texture;
  */
 public interface ITextureRegistry {
 
-	Icon registerIcon(String name);
+	Icon registerIcon(String location);
+
+	Icon registerIcon(String prefix, String location);
 
 }

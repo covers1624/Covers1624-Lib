@@ -1,6 +1,5 @@
 package covers1624.lib.client.registry.proxy;
 
-import covers1624.lib.api.texture.provider.ITextureProvider;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraftforge.fluids.BlockFluidClassic;
@@ -12,23 +11,23 @@ public class RegistryProxy {
 
 	protected boolean hasInit = false;
 
-	public void register(Object provider){
+	public void register(Object provider) {
 
 	}
 
-	public void registerBlock(Block block){
+	public void registerBlock(Block block) {
 
 	}
 
-	public void registerItem(Item item){
+	public void registerItem(Item item) {
 
 	}
 
-	public void registerFluid(BlockFluidClassic fluid){
+	public void registerFluid(BlockFluidClassic fluid) {
 
 	}
 
-	public void init(){
+	public void init() {
 
 		hasInit = true;
 	}

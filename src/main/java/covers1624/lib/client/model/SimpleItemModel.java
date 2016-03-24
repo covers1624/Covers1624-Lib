@@ -15,10 +15,11 @@ import net.minecraftforge.client.model.*;
  * Created by covers1624 on 1/20/2016.
  */
 @SuppressWarnings({ "deprecation", "ConstantConditions" })
-public class SimpleItemModel extends ItemLayerModel{
+public class SimpleItemModel extends ItemLayerModel {
 
 	private ImmutableList<ResourceLocation> textures;
 	private boolean isSword;
+
 	public SimpleItemModel(ImmutableList<ResourceLocation> textures, boolean isSword) {
 		super(textures);
 		this.textures = textures;
@@ -35,7 +36,7 @@ public class SimpleItemModel extends ItemLayerModel{
 		TextureAtlasSprite particle = bakedTextureGetter.apply(textures.isEmpty() ? new ResourceLocation("missingno") : textures.get(0));
 		ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms = IPerspectiveAwareModel.MapWrapper.getTransforms(state);
 		IFlexibleBakedModel model = new SimpleBakedItemModel(builder.build(), particle, format, isSword);
-		if (transforms.isEmpty()){
+		if (transforms.isEmpty()) {
 			return model;
 		}
 		return new IPerspectiveAwareModel.MapWrapper(model, transforms);

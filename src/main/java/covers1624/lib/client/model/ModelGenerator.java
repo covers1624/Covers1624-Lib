@@ -36,7 +36,6 @@ import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.client.model.ModelFluid;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.BlockFluidClassic;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -66,6 +65,13 @@ public class ModelGenerator {
 		clear();
 
 		for (ITextureProvider provider : textureProviders) {
+			if (provider instanceof IBlockTextureProvider){
+				textureRegistry.setTexturePass(0);
+			} else if (provider instanceof IItemTextureProvider){
+				textureRegistry.setTexturePass(1);
+			} else {
+				textureRegistry.setTexturePass(2);
+			}
 			provider.registerIcons(textureRegistry);
 		}
 		//Fluids
@@ -193,7 +199,7 @@ public class ModelGenerator {
 					LogHelper.info(location);
 					IBakedModel bakedModel = ForgeHooksClient.handleCameraTransforms(event.modelRegistry.getObject(location), ItemCameraTransforms.TransformType.THIRD_PERSON);
 					ItemCameraTransforms transforms = bakedModel.getItemCameraTransforms();
-					LogHelper.info("Transform: 3rd: %s, 1nd: %s", itemTransformToString(transforms.thirdPerson), itemTransformToString(transforms.firstPerson));
+					LogHelper.info("Transform: 3rd: %s, 1st: %s", itemTransformToString(transforms.thirdPerson), itemTransformToString(transforms.firstPerson));
 				}
 			}
 		}
@@ -207,7 +213,7 @@ public class ModelGenerator {
 		//itemIconList.clear();
 	}
 
-	public static String itemTransformToString(ItemTransformVec3f transformVec3f){
+	public static String itemTransformToString(ItemTransformVec3f transformVec3f) {
 		return String.format("Rotation: %s, Translation: %s, Scale: %s", transformVec3f.rotation.toString(), transformVec3f.translation.toString(), transformVec3f.scale.toString());
 	}
 

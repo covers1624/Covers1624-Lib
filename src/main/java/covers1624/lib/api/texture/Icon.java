@@ -56,10 +56,10 @@ public class Icon {
 		}
 	}
 
-	public String getIconName(){
+	public String getIconName() {
 		try {
 			return sprite.getIconName();
-		} catch (Throwable ignored){
+		} catch (Throwable ignored) {
 			LogHelper.bigTrace("Ignoring getIconName call, this is the server");
 		}
 		return "UNKNOWN";

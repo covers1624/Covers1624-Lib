@@ -1,7 +1,5 @@
 package covers1624.lib.client.registry.proxy;
 
-import covers1624.lib.api.texture.provider.IBlockTextureProvider;
-import covers1624.lib.api.texture.provider.IItemTextureProvider;
 import covers1624.lib.api.texture.provider.ITextureProvider;
 import covers1624.lib.client.model.ModelGenerator;
 import net.minecraft.block.Block;
@@ -16,11 +14,11 @@ public class ClientRegistryProxy extends RegistryProxy {
 
 	@Override
 	public void register(Object provider) {
-		if (provider instanceof ITextureProvider){
+		if (provider instanceof ITextureProvider) {
 			ModelGenerator.textureProviders.add((ITextureProvider) provider);
-			if (provider instanceof Block){
+			if (provider instanceof Block) {
 				ModelGenerator.blocks.add((Block) provider);
-			} else if (provider instanceof Item){
+			} else if (provider instanceof Item) {
 				ModelGenerator.items.add((Item) provider);
 			}
 		}
@@ -30,27 +28,27 @@ public class ClientRegistryProxy extends RegistryProxy {
 	public void registerBlock(Block block) {
 		//if (block instanceof IBlockTextureProvider && !ModelGenerator.blocks.contains(block)){
 
-			register(block);
+		register(block);
 		//}
 	}
 
-	public void registerItem(Item item){
+	public void registerItem(Item item) {
 		//if (item instanceof IItemTextureProvider && !ModelGenerator.items.contains(item)){
 
-			register(item);
+		register(item);
 		//}
 	}
 
 	@Override
 	public void registerFluid(BlockFluidClassic fluid) {
-		if (!ModelGenerator.fluids.contains(fluid)){
+		if (!ModelGenerator.fluids.contains(fluid)) {
 			ModelGenerator.fluids.add(fluid);
 		}
 	}
 
 	@Override
 	public void init() {
-		if (!hasInit){
+		if (!hasInit) {
 			MinecraftForge.EVENT_BUS.register(new ModelGenerator());
 		}
 		super.init();

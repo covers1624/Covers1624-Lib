@@ -14,7 +14,7 @@ public class ItemIcon {
 	private TextureAtlasSprite sprite;
 	private ResourceLocation location;
 
-	public ItemIcon(Item item, int meta, TextureAtlasSprite sprite, ResourceLocation location){
+	public ItemIcon(Item item, int meta, TextureAtlasSprite sprite, ResourceLocation location) {
 		this.item = item;
 		this.meta = meta;
 		this.sprite = sprite;

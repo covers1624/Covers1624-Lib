@@ -2,7 +2,6 @@ package covers1624.lib.client.model;
 
 import covers1624.lib.api.texture.Icon;
 import covers1624.lib.api.texture.provider.IBlockTextureProvider;
-import covers1624.lib.util.LogHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

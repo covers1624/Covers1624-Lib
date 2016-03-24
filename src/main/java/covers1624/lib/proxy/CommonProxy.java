@@ -5,8 +5,7 @@ package covers1624.lib.proxy;
  */
 public class CommonProxy {
 
-
-	public void registerEvents(){
+	public void registerEvents() {
 
 	}
 

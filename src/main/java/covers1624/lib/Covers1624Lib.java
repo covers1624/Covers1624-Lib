@@ -18,24 +18,20 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = "[1.8.9]")
 public class Covers1624Lib {
 
-	public static ModMetadata modMetadata = new ModMetadata();
 	@SidedProxy(clientSide = "covers1624.lib.proxy.ClientProxy", serverSide = "covers1624.lib.proxy.CommonProxy")
 	public static CommonProxy proxy;
 
 	static {
-		modMetadata.modId = Reference.MOD_ID;
-		modMetadata.name = Reference.MOD_NAME;
-		modMetadata.description = "Contains Basic and some advanced Utility classes used by all my mods.";
-		modMetadata.version = Reference.MOD_VERSION;
-		modMetadata.authorList.add("covers1624");
+
 	}
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		handleMetadata(event.getModMetadata());
 		LogHelper.info("Init");
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
-		//GameRegistry.registerItem(new TempItem(), "tempItem");
-		//GameRegistry.registerBlock(new TempBlock(), "tempBlock");
+		GameRegistry.registerItem(new TempItem(), "tempItem");
+		GameRegistry.registerBlock(new TempBlock(), "tempBlock");
 	}
 
 	@Mod.EventHandler
@@ -45,5 +41,13 @@ public class Covers1624Lib {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
+	}
+
+	private static void handleMetadata(ModMetadata modMetadata) {
+		modMetadata.modId = Reference.MOD_ID;
+		modMetadata.name = Reference.MOD_NAME;
+		modMetadata.description = "Contains Basic and some advanced Utility classes used by all my mods.";
+		modMetadata.version = Reference.MOD_VERSION;
+		modMetadata.authorList.add("covers1624");
 	}
 }

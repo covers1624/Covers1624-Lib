@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -46,7 +45,8 @@ public class BlockUtils {
 
 	/**
 	 * Generates a bounding box.
-	 * @param pos MUST HAVE A ORIENTATION SET!
+	 *
+	 * @param pos     MUST HAVE A ORIENTATION SET!
 	 * @param vector3 Size of the box.
 	 */
 	public static AxisAlignedBB getBox(BlockPosition pos, Vector3 vector3) {

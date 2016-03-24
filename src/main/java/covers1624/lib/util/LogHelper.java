@@ -1,7 +1,6 @@
 package covers1624.lib.util;
 
 import covers1624.lib.handler.ConfigurationHandler;
-import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -130,7 +129,6 @@ public class LogHelper {
 		}
 		error("****************************************");
 	}
-
 
 	public static void bigFatal(String format, Object... data) {
 		StackTraceElement[] trace = Thread.currentThread().getStackTrace();

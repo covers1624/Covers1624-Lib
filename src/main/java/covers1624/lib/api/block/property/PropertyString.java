@@ -1,4 +1,4 @@
-package covers1624.lib.api.block;
+package covers1624.lib.api.block.property;
 
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.properties.PropertyHelper;

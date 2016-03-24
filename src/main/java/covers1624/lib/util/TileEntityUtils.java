@@ -28,7 +28,7 @@ public class TileEntityUtils {
 					}
 				}
 				if (second != null) {
-					return new InventoryLargeChest("large Chest", (TileEntityChest)inventory, (TileEntityChest)second);
+					return new InventoryLargeChest("large Chest", (TileEntityChest) inventory, (TileEntityChest) second);
 				}
 			}
 			return inventory;

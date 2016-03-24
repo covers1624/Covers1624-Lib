@@ -11,16 +11,19 @@ import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static covers1624.lib.reference.Reference.MOD_ID_SCANNER;
+import static covers1624.lib.reference.Reference.MOD_NAME_SCANNER;
+
 /**
  * Created by covers1624 on 1/21/2016.
  */
-@Mod(modid = "TextureProviderScanner", name = "TextureProviderScanner", dependencies = "after:*")
+@Mod(modid = MOD_ID_SCANNER, name = MOD_NAME_SCANNER, dependencies = "after:*", clientSideOnly = true)
 public class TextureProviderScanner {
 
 	@Mod.EventHandler
 	@SideOnly(Side.CLIENT)
 	public void init(FMLPreInitializationEvent event) {
-		LogHelper.info("Analysing Block Registry for instances of ITextureProvider...");
+		LogHelper.info("Analysing Block Registry for instances of IBlockTextureProvider...");
 		int found = 0;
 		for (Block block : GameData.getBlockRegistry()) {
 			if (block instanceof ITextureProvider) {
@@ -29,7 +32,7 @@ public class TextureProviderScanner {
 			}
 		}
 		LogHelper.info("Finished Analysing the Block Registry. Found %s instances.", found);
-		LogHelper.info("Analysing Item Registry for instances of ITextureProvider...");
+		LogHelper.info("Analysing Item Registry for instances of IItemTextureProvider...");
 		found = 0;
 		for (Item item : GameData.getItemRegistry()) {
 			if (item instanceof ITextureProvider) {

@@ -67,7 +67,6 @@ public class Vector3I {
 		this.z -= z;
 	}
 
-
 	@SuppressWarnings("resource")
 	@Override
 	public String toString() {

@@ -1,5 +1,15 @@
 package covers1624.lib.repack.codechicken.core;
 
+import com.google.common.collect.ImmutableList;
+import covers1624.lib.util.LogHelper;
+import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModClassLoader;
+import net.minecraftforge.fml.relauncher.CoreModManager;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,18 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.ClassNode;
-
-import com.google.common.collect.ImmutableList;
-
-import covers1624.lib.util.LogHelper;
-import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModClassLoader;
-import net.minecraftforge.fml.relauncher.CoreModManager;
 
 public class ClassDiscoverer {
 	public IStringMatcher matcher;

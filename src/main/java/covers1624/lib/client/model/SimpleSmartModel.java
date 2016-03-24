@@ -2,6 +2,7 @@ package covers1624.lib.client.model;
 
 import covers1624.lib.api.texture.Icon;
 import covers1624.lib.api.texture.provider.IBlockTextureProvider;
+import covers1624.lib.util.LogHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -34,19 +35,19 @@ public class SimpleSmartModel implements ISmartBlockModel, IPerspectiveAwareMode
 
 	private Icon[] icons = new Icon[6];
 
-	public SimpleSmartModel(){
+	public SimpleSmartModel() {
 
 	}
 
-	public SimpleSmartModel(Icon[] icons){
+	public SimpleSmartModel(Icon[] icons) {
 		this.icons = icons;
 		particleTexture = (TextureAtlasSprite) icons[0].getSprite();
 	}
 
-	public void inventorySetup(IBlockState state){
-		if (state.getBlock() instanceof IBlockTextureProvider){
+	public void inventorySetup(IBlockState state) {
+		if (state.getBlock() instanceof IBlockTextureProvider) {
 			IBlockTextureProvider provider = (IBlockTextureProvider) state.getBlock();
-			for (EnumFacing face : EnumFacing.VALUES){
+			for (EnumFacing face : EnumFacing.VALUES) {
 				icons[face.ordinal()] = provider.getIcon(state.getBlock().getMetaFromState(state), face);
 			}
 			particleTexture = (TextureAtlasSprite) icons[0].getSprite();
@@ -55,6 +56,7 @@ public class SimpleSmartModel implements ISmartBlockModel, IPerspectiveAwareMode
 
 	@Override
 	public IBakedModel handleBlockState(IBlockState state) {
+		LogHelper.info("Called handleBlockState.");
 		if (state.getBlock() instanceof IBlockTextureProvider) {
 			IBlockTextureProvider textureProvider = (IBlockTextureProvider) state.getBlock();
 			for (EnumFacing face : EnumFacing.VALUES) {
