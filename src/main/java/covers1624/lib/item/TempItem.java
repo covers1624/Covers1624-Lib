@@ -11,29 +11,29 @@ import net.minecraft.item.ItemSword;
  * Created by covers1624 on 1/21/2016.
  */
 public class TempItem extends ItemSword implements IItemTextureProvider, ICustomTransform {
-	private Icon icon;
+    private Icon icon;
 
-	public TempItem() {
-		super(ToolMaterial.IRON);
-		setCreativeTab(CreativeTabs.tabCombat);
-	}
+    public TempItem() {
+        super(ToolMaterial.IRON);
+        setCreativeTab(CreativeTabs.tabCombat);
+    }
 
-	@Override
-	public void registerIcons(ITextureRegistry textureRegistry) {
-		icon = textureRegistry.registerIcon("covers1624lib:tempSword");
-	}
+    @Override
+    public void registerIcons(ITextureRegistry textureRegistry) {
+        icon = textureRegistry.registerIcon("covers1624lib:tempSword");
+    }
 
-	public Icon getIcon(int meta) {
-		return icon;
-	}
+    public Icon getIcon(int meta) {
+        return icon;
+    }
 
-	@Override
-	public boolean isFull3D() {
-		return false;
-	}
+    @Override
+    public boolean isFull3D() {
+        return false;
+    }
 
-	@Override
-	public boolean shouldRotateAroundWhenRendering() {
-		return false;
-	}
+    @Override
+    public boolean shouldRotateAroundWhenRendering() {
+        return false;
+    }
 }

@@ -9,27 +9,27 @@ import net.minecraftforge.fluids.BlockFluidClassic;
  */
 public class RegistryProxy {
 
-	protected boolean hasInit = false;
+    protected boolean hasInit = false;
 
-	public void register(Object provider) {
+    public void register(Object provider) {
 
-	}
+    }
 
-	public void registerBlock(Block block) {
+    public void registerBlock(Block block) {
 
-	}
+    }
 
-	public void registerItem(Item item) {
+    public void registerItem(Item item) {
 
-	}
+    }
 
-	public void registerFluid(BlockFluidClassic fluid) {
+    public void registerFluid(BlockFluidClassic fluid) {
 
-	}
+    }
 
-	public void init() {
+    public void init() {
 
-		hasInit = true;
-	}
+        hasInit = true;
+    }
 
 }

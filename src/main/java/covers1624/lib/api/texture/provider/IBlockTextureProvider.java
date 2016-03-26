@@ -9,21 +9,21 @@ import net.minecraft.util.EnumFacing;
  */
 public interface IBlockTextureProvider extends ITextureProvider {
 
-	/**
-	 * Returns an icon for a given face.
-	 *
-	 * @param blockState The extended metadata for the block.
-	 * @param face       The face to get the Icon for.
-	 * @return The icon for the given face.
-	 */
-	Icon getIcon(IBlockState blockState, EnumFacing face);
+    /**
+     * Returns an icon for a given face.
+     *
+     * @param blockState The extended metadata for the block.
+     * @param face       The face to get the Icon for.
+     * @return The icon for the given face.
+     */
+    Icon getIcon(IBlockState blockState, EnumFacing face);
 
-	/**
-	 * Returns the icon for a given face for inventory rendering.
-	 *
-	 * @param face The face to get the Icon for.
-	 * @return The icon for the given face.
-	 */
-	Icon getIcon(int meta, EnumFacing face);
+    /**
+     * Returns the icon for a given face for inventory rendering.
+     *
+     * @param face The face to get the Icon for.
+     * @return The icon for the given face.
+     */
+    Icon getIcon(int meta, EnumFacing face);
 
 }

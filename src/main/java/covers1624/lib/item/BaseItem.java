@@ -10,18 +10,18 @@ import net.minecraft.item.Item;
  */
 public abstract class BaseItem extends Item implements IItemTextureProvider {
 
-	protected Icon itemIcon;
+    protected Icon itemIcon;
 
-	public BaseItem() {
-	}
+    public BaseItem() {
+    }
 
-	@Override
-	public Icon getIcon(int meta) {
-		return itemIcon;
-	}
+    @Override
+    public Icon getIcon(int meta) {
+        return itemIcon;
+    }
 
-	@Override
-	public void registerIcons(ITextureRegistry textureRegistry) {
-		itemIcon = textureRegistry.registerIcon("missingno");
-	}
+    @Override
+    public void registerIcons(ITextureRegistry textureRegistry) {
+        itemIcon = textureRegistry.registerIcon("missingno");
+    }
 }

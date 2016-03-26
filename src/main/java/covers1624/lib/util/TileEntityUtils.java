@@ -11,29 +11,29 @@ import net.minecraft.world.World;
  */
 public class TileEntityUtils {
 
-	/**
-	 * Retrieves an IInventory at the given location, Useful for receiving the entire inventory of a double chest.
-	 */
-	public static IInventory getInventory(World world, BlockPosition pos) {
-		TileEntity tileEntity = pos.getTileEntity(world);
-		if (tileEntity instanceof IInventory) {
-			IInventory inventory = (IInventory) tileEntity;
-			if (inventory instanceof TileEntityChest) {
-				IInventory second = null;
-				for (BlockPosition position : pos.getAdjacent(false)) {
-					TileEntity suspect = position.getTileEntity(world);
-					if (suspect instanceof TileEntityChest) {
-						second = (IInventory) suspect;
-						break;
-					}
-				}
-				if (second != null) {
-					return new InventoryLargeChest("large Chest", (TileEntityChest) inventory, (TileEntityChest) second);
-				}
-			}
-			return inventory;
-		}
-		return null;
-	}
+    /**
+     * Retrieves an IInventory at the given location, Useful for receiving the entire inventory of a double chest.
+     */
+    public static IInventory getInventory(World world, BlockPosition pos) {
+        TileEntity tileEntity = pos.getTileEntity(world);
+        if (tileEntity instanceof IInventory) {
+            IInventory inventory = (IInventory) tileEntity;
+            if (inventory instanceof TileEntityChest) {
+                IInventory second = null;
+                for (BlockPosition position : pos.getAdjacent(false)) {
+                    TileEntity suspect = position.getTileEntity(world);
+                    if (suspect instanceof TileEntityChest) {
+                        second = (IInventory) suspect;
+                        break;
+                    }
+                }
+                if (second != null) {
+                    return new InventoryLargeChest("large Chest", (TileEntityChest) inventory, (TileEntityChest) second);
+                }
+            }
+            return inventory;
+        }
+        return null;
+    }
 
 }

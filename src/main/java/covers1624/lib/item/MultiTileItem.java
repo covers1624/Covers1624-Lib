@@ -18,34 +18,34 @@ import java.util.Map;
  */
 
 public class MultiTileItem extends ItemBlock {
-	private HashMap<Integer, String> names = new HashMap<Integer, String>();
+    private HashMap<Integer, String> names = new HashMap<Integer, String>();
 
-	public MultiTileItem(Block block) {
-		super(block);
-		setMaxDamage(0);
-		setHasSubtypes(true);
-	}
+    public MultiTileItem(Block block) {
+        super(block);
+        setMaxDamage(0);
+        setHasSubtypes(true);
+    }
 
-	@Override
-	public int getMetadata(int meta) {
-		return meta;
-	}
+    @Override
+    public int getMetadata(int meta) {
+        return meta;
+    }
 
-	public void registerSubItem(int meta, String unlocName) {
-		names.put(meta, unlocName);
-	}
+    public void registerSubItem(int meta, String unlocName) {
+        names.put(meta, unlocName);
+    }
 
-	@Override
-	public String getUnlocalizedName(ItemStack stack) {
-		return names.get(stack.getItemDamage());
-	}
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        return names.get(stack.getItemDamage());
+    }
 
-	@SuppressWarnings({ "unchecked" })
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List items) {
-		for (Map.Entry<Integer, String> entry : names.entrySet()) {
-			items.add(new ItemStack(this, 1, entry.getKey()));
-		}
-	}
+    @SuppressWarnings({ "unchecked" })
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item item, CreativeTabs tab, List items) {
+        for (Map.Entry<Integer, String> entry : names.entrySet()) {
+            items.add(new ItemStack(this, 1, entry.getKey()));
+        }
+    }
 }

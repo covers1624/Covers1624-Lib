@@ -16,172 +16,172 @@ import java.util.HashSet;
  * This is added as a class transformer if CodeChickenCore is installed. Adding it as a class transformer will speed evaluation up slightly by automatically caching superclasses when they are first loaded.
  */
 public class ClassHeirachyManager implements IClassTransformer {
-	static {
-		Launch.classLoader.addTransformerExclusion("covers1624.lib.repack.codechicken.lib.asm");
-	}
+    static {
+        Launch.classLoader.addTransformerExclusion("covers1624.lib.repack.codechicken.lib.asm");
+    }
 
-	public static class SuperCache {
-		String superclass;
-		public HashSet<String> parents = new HashSet<String>();
-		private boolean flattened;
+    public static class SuperCache {
+        String superclass;
+        public HashSet<String> parents = new HashSet<String>();
+        private boolean flattened;
 
-		public void add(String parent) {
-			parents.add(parent);
-		}
+        public void add(String parent) {
+            parents.add(parent);
+        }
 
-		public void flatten() {
-			if (flattened) {
-				return;
-			}
+        public void flatten() {
+            if (flattened) {
+                return;
+            }
 
-			for (String s : new ArrayList<String>(parents)) {
-				SuperCache c = declareClass(s);
-				if (c != null) {
-					c.flatten();
-					parents.addAll(c.parents);
-				}
-			}
-			flattened = true;
-		}
-	}
+            for (String s : new ArrayList<String>(parents)) {
+                SuperCache c = declareClass(s);
+                if (c != null) {
+                    c.flatten();
+                    parents.addAll(c.parents);
+                }
+            }
+            flattened = true;
+        }
+    }
 
-	public static HashMap<String, SuperCache> superclasses = new HashMap<String, SuperCache>();
-	private static LaunchClassLoader cl = Launch.classLoader;
+    public static HashMap<String, SuperCache> superclasses = new HashMap<String, SuperCache>();
+    private static LaunchClassLoader cl = Launch.classLoader;
 
-	public static String toKey(String name) {
-		if (ASMUtils.obfuscated) {
-			name = FMLDeobfuscatingRemapper.INSTANCE.map(name.replace('.', '/')).replace('/', '.');
-		}
-		return name;
-	}
+    public static String toKey(String name) {
+        if (ASMUtils.obfuscated) {
+            name = FMLDeobfuscatingRemapper.INSTANCE.map(name.replace('.', '/')).replace('/', '.');
+        }
+        return name;
+    }
 
-	public static String unKey(String name) {
-		if (ASMUtils.obfuscated) {
-			name = FMLDeobfuscatingRemapper.INSTANCE.unmap(name.replace('.', '/')).replace('/', '.');
-		}
-		return name;
-	}
+    public static String unKey(String name) {
+        if (ASMUtils.obfuscated) {
+            name = FMLDeobfuscatingRemapper.INSTANCE.unmap(name.replace('.', '/')).replace('/', '.');
+        }
+        return name;
+    }
 
-	/**
-	 * @param name       The class in question
-	 * @param superclass The class being extended
-	 * @return true if clazz extends, either directly or indirectly, superclass.
-	 */
-	public static boolean classExtends(String name, String superclass) {
-		name = toKey(name);
-		superclass = toKey(superclass);
+    /**
+     * @param name       The class in question
+     * @param superclass The class being extended
+     * @return true if clazz extends, either directly or indirectly, superclass.
+     */
+    public static boolean classExtends(String name, String superclass) {
+        name = toKey(name);
+        superclass = toKey(superclass);
 
-		if (name.equals(superclass)) {
-			return true;
-		}
+        if (name.equals(superclass)) {
+            return true;
+        }
 
-		SuperCache cache = declareClass(name);
-		if (cache == null)//just can't handle this
-		{
-			return false;
-		}
+        SuperCache cache = declareClass(name);
+        if (cache == null)//just can't handle this
+        {
+            return false;
+        }
 
-		cache.flatten();
-		return cache.parents.contains(superclass);
-	}
+        cache.flatten();
+        return cache.parents.contains(superclass);
+    }
 
-	private static SuperCache declareClass(String name) {
-		name = toKey(name);
-		SuperCache cache = superclasses.get(name);
+    private static SuperCache declareClass(String name) {
+        name = toKey(name);
+        SuperCache cache = superclasses.get(name);
 
-		if (cache != null) {
-			return cache;
-		}
+        if (cache != null) {
+            return cache;
+        }
 
-		try {
-			byte[] bytes = cl.getClassBytes(unKey(name));
-			if (bytes != null) {
-				cache = declareASM(bytes);
-			}
-		} catch (Exception e) {
-		}
+        try {
+            byte[] bytes = cl.getClassBytes(unKey(name));
+            if (bytes != null) {
+                cache = declareASM(bytes);
+            }
+        } catch (Exception e) {
+        }
 
-		if (cache != null) {
-			return cache;
-		}
+        if (cache != null) {
+            return cache;
+        }
 
-		try {
-			cache = declareReflection(name);
-		} catch (ClassNotFoundException e) {
-		}
+        try {
+            cache = declareReflection(name);
+        } catch (ClassNotFoundException e) {
+        }
 
-		return cache;
-	}
+        return cache;
+    }
 
-	private static SuperCache declareReflection(String name) throws ClassNotFoundException {
-		Class<?> aclass = Class.forName(name);
+    private static SuperCache declareReflection(String name) throws ClassNotFoundException {
+        Class<?> aclass = Class.forName(name);
 
-		SuperCache cache = getOrCreateCache(name);
-		if (aclass.isInterface()) {
-			cache.superclass = "java.lang.Object";
-		} else if (name.equals("java.lang.Object")) {
-			return cache;
-		} else {
-			cache.superclass = toKey(aclass.getSuperclass().getName());
-		}
+        SuperCache cache = getOrCreateCache(name);
+        if (aclass.isInterface()) {
+            cache.superclass = "java.lang.Object";
+        } else if (name.equals("java.lang.Object")) {
+            return cache;
+        } else {
+            cache.superclass = toKey(aclass.getSuperclass().getName());
+        }
 
-		cache.add(cache.superclass);
-		for (Class<?> iclass : aclass.getInterfaces()) {
-			cache.add(toKey(iclass.getName()));
-		}
+        cache.add(cache.superclass);
+        for (Class<?> iclass : aclass.getInterfaces()) {
+            cache.add(toKey(iclass.getName()));
+        }
 
-		return cache;
-	}
+        return cache;
+    }
 
-	private static SuperCache declareASM(byte[] bytes) {
-		ClassNode node = new ClassNode();
-		ClassReader classReader = new ClassReader(bytes);
-		classReader.accept(node, 0);
-		String name = toKey(node.name);
+    private static SuperCache declareASM(byte[] bytes) {
+        ClassNode node = new ClassNode();
+        ClassReader classReader = new ClassReader(bytes);
+        classReader.accept(node, 0);
+        String name = toKey(node.name);
 
-		SuperCache cache = getOrCreateCache(name);
-		cache.superclass = toKey(node.superName.replace('/', '.'));
-		cache.add(cache.superclass);
-		for (String iclass : node.interfaces) {
-			cache.add(toKey(iclass.replace('/', '.')));
-		}
+        SuperCache cache = getOrCreateCache(name);
+        cache.superclass = toKey(node.superName.replace('/', '.'));
+        cache.add(cache.superclass);
+        for (String iclass : node.interfaces) {
+            cache.add(toKey(iclass.replace('/', '.')));
+        }
 
-		return cache;
-	}
+        return cache;
+    }
 
-	@Override
-	public byte[] transform(String name, String tname, byte[] bytes) {
-		if (bytes == null) {
-			return null;
-		}
+    @Override
+    public byte[] transform(String name, String tname, byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
 
-		if (!superclasses.containsKey(tname)) {
-			declareASM(bytes);
-		}
+        if (!superclasses.containsKey(tname)) {
+            declareASM(bytes);
+        }
 
-		return bytes;
-	}
+        return bytes;
+    }
 
-	public static SuperCache getOrCreateCache(String name) {
-		SuperCache cache = superclasses.get(name);
-		if (cache == null) {
-			superclasses.put(name, cache = new SuperCache());
-		}
-		return cache;
-	}
+    public static SuperCache getOrCreateCache(String name) {
+        SuperCache cache = superclasses.get(name);
+        if (cache == null) {
+            superclasses.put(name, cache = new SuperCache());
+        }
+        return cache;
+    }
 
-	public static String getSuperClass(String name, boolean runtime) {
-		name = toKey(name);
-		SuperCache cache = declareClass(name);
-		if (cache == null) {
-			return "java.lang.Object";
-		}
+    public static String getSuperClass(String name, boolean runtime) {
+        name = toKey(name);
+        SuperCache cache = declareClass(name);
+        if (cache == null) {
+            return "java.lang.Object";
+        }
 
-		cache.flatten();
-		String s = cache.superclass;
-		if (!runtime) {
-			s = FMLDeobfuscatingRemapper.INSTANCE.unmap(s);
-		}
-		return s;
-	}
+        cache.flatten();
+        String s = cache.superclass;
+        if (!runtime) {
+            s = FMLDeobfuscatingRemapper.INSTANCE.unmap(s);
+        }
+        return s;
+    }
 }

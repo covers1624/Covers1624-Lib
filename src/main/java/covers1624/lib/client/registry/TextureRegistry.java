@@ -13,38 +13,38 @@ import net.minecraft.util.ResourceLocation;
  */
 public class TextureRegistry implements ITextureRegistry {
 
-	private TextureMap textureMap;
-	/**
-	 * Defines the current pass for textures. 0 Blocks 1 Items.
-	 */
-	private int pass = 0;
+    private TextureMap textureMap;
+    /**
+     * Defines the current pass for textures. 0 Blocks 1 Items.
+     */
+    private int pass = 0;
 
-	public TextureRegistry(TextureMap textureMap) {
-		this.textureMap = textureMap;
-	}
+    public TextureRegistry(TextureMap textureMap) {
+        this.textureMap = textureMap;
+    }
 
-	public void setTexturePass(int pass){
-		this.pass = pass;
-	}
+    public void setTexturePass(int pass) {
+        this.pass = pass;
+    }
 
-	public Icon registerIcon(String location){
-		ResourceLocation resourceLocation = new ResourceLocation(location);
-		return registerIcon(resourceLocation.getResourceDomain(), resourceLocation.getResourcePath());
-	}
+    public Icon registerIcon(String location) {
+        ResourceLocation resourceLocation = new ResourceLocation(location);
+        return registerIcon(resourceLocation.getResourceDomain(), resourceLocation.getResourcePath());
+    }
 
-	public Icon registerIcon(String prefix, String location) {
-		if (prefix.endsWith(":")){
-			prefix = prefix.substring(0, prefix.lastIndexOf(":"));
-		}
-		String parentDomain = (pass == 0 ? "blocks/" : (pass == 1 ? "items/" : ""));
-		ResourceLocation patchedLocation = new ResourceLocation(prefix, parentDomain + location);
-		TextureAtlasSprite sprite = textureMap.getTextureExtry(patchedLocation.toString());
-		if (sprite == null) {
-			sprite = TextureAtlasSpriteAccessor.createTexture(patchedLocation.toString());
-			textureMap.setTextureEntry(patchedLocation.toString(), sprite);
-		}
-		Icon icon = new Icon(sprite);
-		LogHelper.info(((TextureAtlasSprite) icon.getSprite()).getIconName());
-		return icon;
-	}
+    public Icon registerIcon(String prefix, String location) {
+        if (prefix.endsWith(":")) {
+            prefix = prefix.substring(0, prefix.lastIndexOf(":"));
+        }
+        String parentDomain = (pass == 0 ? "blocks/" : (pass == 1 ? "items/" : ""));
+        ResourceLocation patchedLocation = new ResourceLocation(prefix, parentDomain + location);
+        TextureAtlasSprite sprite = textureMap.getTextureExtry(patchedLocation.toString());
+        if (sprite == null) {
+            sprite = TextureAtlasSpriteAccessor.createTexture(patchedLocation.toString());
+            textureMap.setTextureEntry(patchedLocation.toString(), sprite);
+        }
+        Icon icon = new Icon(sprite);
+        LogHelper.info(((TextureAtlasSprite) icon.getSprite()).getIconName());
+        return icon;
+    }
 }

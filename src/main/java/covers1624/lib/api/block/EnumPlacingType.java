@@ -7,12 +7,12 @@ import net.minecraft.util.IStringSerializable;
  */
 public enum EnumPlacingType implements IStringSerializable {
 
-	HORIZONTAL,
-	ALL,
-	NONE;
+    HORIZONTAL,
+    ALL,
+    NONE;
 
-	@Override
-	public String getName() {
-		return this.name().toLowerCase();
-	}
+    @Override
+    public String getName() {
+        return this.name().toLowerCase();
+    }
 }

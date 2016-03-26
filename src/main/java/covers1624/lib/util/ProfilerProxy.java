@@ -10,36 +10,36 @@ import static covers1624.lib.handler.ConfigurationHandler.dissableProfiling;
  */
 public class ProfilerProxy {
 
-	private Profiler profiler;
+    private Profiler profiler;
 
-	public void pushProfiler(Profiler profiler) {
-		if (!dissableProfiling) {
-			this.profiler = profiler;
-		}
-	}
+    public void pushProfiler(Profiler profiler) {
+        if (!dissableProfiling) {
+            this.profiler = profiler;
+        }
+    }
 
-	public void popProfiler() {
-		if (!dissableProfiling) {
-			profiler = null;
-		}
-	}
+    public void popProfiler() {
+        if (!dissableProfiling) {
+            profiler = null;
+        }
+    }
 
-	public void startSection(String name) {
-		if (profiler != null) {
-			profiler.startSection(name);
-		}
-	}
+    public void startSection(String name) {
+        if (profiler != null) {
+            profiler.startSection(name);
+        }
+    }
 
-	public void endSection() {
-		if (profiler != null) {
-			profiler.endSection();
-		}
-	}
+    public void endSection() {
+        if (profiler != null) {
+            profiler.endSection();
+        }
+    }
 
-	public void startEndSection(String name) {
-		if (profiler != null) {
-			endSection();
-			startSection(name);
-		}
-	}
+    public void startEndSection(String name) {
+        if (profiler != null) {
+            endSection();
+            startSection(name);
+        }
+    }
 }

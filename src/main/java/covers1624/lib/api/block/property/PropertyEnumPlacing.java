@@ -13,12 +13,12 @@ import java.util.Collection;
  */
 public class PropertyEnumPlacing extends PropertyEnum<EnumPlacingType> {
 
-	protected PropertyEnumPlacing(String name, Collection<EnumPlacingType> allowedValues) {
-		super(name, EnumPlacingType.class, allowedValues);
-	}
+    protected PropertyEnumPlacing(String name, Collection<EnumPlacingType> allowedValues) {
+        super(name, EnumPlacingType.class, allowedValues);
+    }
 
-	public static PropertyEnumPlacing create(String name) {
-		return new PropertyEnumPlacing(name, Collections2.filter(Lists.newArrayList(EnumPlacingType.values()), Predicates.<EnumPlacingType>alwaysTrue()));
-	}
+    public static PropertyEnumPlacing create(String name) {
+        return new PropertyEnumPlacing(name, Collections2.filter(Lists.newArrayList(EnumPlacingType.values()), Predicates.<EnumPlacingType>alwaysTrue()));
+    }
 
 }

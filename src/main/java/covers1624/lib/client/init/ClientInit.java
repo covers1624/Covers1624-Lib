@@ -12,18 +12,18 @@ import net.minecraftforge.fml.relauncher.Side;
  */
 public class ClientInit {
 
-	@SidedProxy(clientSide = "covers1624.lib.client.registry.proxy.ClientRegistryProxy", serverSide = "covers1624.lib.client.registry.proxy.RegistryProxy")
-	public static RegistryProxy proxy;
+    @SidedProxy(clientSide = "covers1624.lib.client.registry.proxy.ClientRegistryProxy", serverSide = "covers1624.lib.client.registry.proxy.RegistryProxy")
+    public static RegistryProxy proxy;
 
-	public static RegistryProxy getProxy() {
-		return proxy;
-	}
+    public static RegistryProxy getProxy() {
+        return proxy;
+    }
 
-	//TODO move to internal Proxy
-	public static void register() {
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-			MinecraftForge.EVENT_BUS.register(new ModelGenerator());
-		}
-	}
+    //TODO move to internal Proxy
+    public static void register() {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+            MinecraftForge.EVENT_BUS.register(new ModelGenerator());
+        }
+    }
 
 }

@@ -18,60 +18,60 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 @Deprecated
 public class MultiTileBlock extends BlockContainer {
 
-	private Class<? extends TileEntity>[] tileEntityMap = new Class[16];
+    private Class<? extends TileEntity>[] tileEntityMap = new Class[16];
 
-	protected MultiTileBlock(Material material) {
-		super(material);
-	}
+    protected MultiTileBlock(Material material) {
+        super(material);
+    }
 
-	/**
-	 * Adds a sub Block and adds a TileEntity mapping for a given metadata and registers the TileEntity.
-	 * See Below for more information.
-	 *
-	 * @param meta,      metadata for the sub Block.
-	 * @param unlocName, Unlocalized name for the sub block.
-	 * @param clazz,     TileEntity Class.
-	 */
-	public void addSubItemAndTileAndRegister(int meta, String unlocName, Class<? extends TileEntity> clazz) {
-		GameRegistry.registerTileEntity(clazz, Loader.instance().activeModContainer().getModId() + ":" + unlocName);
-		addSubItemAndTile(meta, unlocName, clazz);
-	}
+    /**
+     * Adds a sub Block and adds a TileEntity mapping for a given metadata and registers the TileEntity.
+     * See Below for more information.
+     *
+     * @param meta,      metadata for the sub Block.
+     * @param unlocName, Unlocalized name for the sub block.
+     * @param clazz,     TileEntity Class.
+     */
+    public void addSubItemAndTileAndRegister(int meta, String unlocName, Class<? extends TileEntity> clazz) {
+        GameRegistry.registerTileEntity(clazz, Loader.instance().activeModContainer().getModId() + ":" + unlocName);
+        addSubItemAndTile(meta, unlocName, clazz);
+    }
 
-	/**
-	 * Adds a sub Block and adds a TileEntity mapping for a given metadata.
-	 * See Below for more information.
-	 *
-	 * @param meta,      metadata for the sub Block.
-	 * @param unlocName, Unlocalized name for the sub block.
-	 * @param clazz,     TileEntity Class.
-	 */
-	public void addSubItemAndTile(int meta, String unlocName, Class<? extends TileEntity> clazz) {
-		addTileEntityMapping(meta, clazz);
-		setItemName(meta, unlocName);
-	}
+    /**
+     * Adds a sub Block and adds a TileEntity mapping for a given metadata.
+     * See Below for more information.
+     *
+     * @param meta,      metadata for the sub Block.
+     * @param unlocName, Unlocalized name for the sub block.
+     * @param clazz,     TileEntity Class.
+     */
+    public void addSubItemAndTile(int meta, String unlocName, Class<? extends TileEntity> clazz) {
+        addTileEntityMapping(meta, clazz);
+        setItemName(meta, unlocName);
+    }
 
-	public void setItemName(int meta, String name) {
-		Item item = Item.getItemFromBlock(this);
-		((MultiTileItem) item).registerSubItem(meta, "tile." + name);
-	}
+    public void setItemName(int meta, String name) {
+        Item item = Item.getItemFromBlock(this);
+        ((MultiTileItem) item).registerSubItem(meta, "tile." + name);
+    }
 
-	/**
-	 * Adds a TileEntity mapping for a given metadata.
-	 *
-	 * @param meta,  metadata for the TileEntity.
-	 * @param clazz, TileEntity Class.
-	 */
-	public void addTileEntityMapping(int meta, Class<? extends TileEntity> clazz) {
-		this.tileEntityMap[meta] = clazz;
-	}
+    /**
+     * Adds a TileEntity mapping for a given metadata.
+     *
+     * @param meta,  metadata for the TileEntity.
+     * @param clazz, TileEntity Class.
+     */
+    public void addTileEntityMapping(int meta, Class<? extends TileEntity> clazz) {
+        this.tileEntityMap[meta] = clazz;
+    }
 
-	@Override
-	public TileEntity createNewTileEntity(World world, int meta) {
-		try {
-			return tileEntityMap[meta].getDeclaredConstructor(new Class[0]).newInstance();
-		} catch (Exception e) {
-			LogHelper.fatal("Unable to create tile with the MetaData of %s.", meta);
-			return null;
-		}
-	}
+    @Override
+    public TileEntity createNewTileEntity(World world, int meta) {
+        try {
+            return tileEntityMap[meta].getDeclaredConstructor(new Class[0]).newInstance();
+        } catch (Exception e) {
+            LogHelper.fatal("Unable to create tile with the MetaData of %s.", meta);
+            return null;
+        }
+    }
 }

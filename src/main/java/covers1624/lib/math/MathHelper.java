@@ -5,13 +5,13 @@ package covers1624.lib.math;
  */
 public class MathHelper {
 
-	public static int clampInt(int value, int min, int max) {
-		if (value > max) {
-			return max;
-		}
-		if (value < min) {
-			return min;
-		}
-		return value;
-	}
+    public static int clampInt(int value, int min, int max) {
+        if (value > max) {
+            return max;
+        }
+        if (value < min) {
+            return min;
+        }
+        return value;
+    }
 }

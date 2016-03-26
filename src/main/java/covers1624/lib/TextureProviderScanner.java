@@ -20,26 +20,26 @@ import static covers1624.lib.reference.Reference.MOD_NAME_SCANNER;
 @Mod(modid = MOD_ID_SCANNER, name = MOD_NAME_SCANNER, dependencies = "after:*", clientSideOnly = true)
 public class TextureProviderScanner {
 
-	@Mod.EventHandler
-	@SideOnly(Side.CLIENT)
-	public void init(FMLPreInitializationEvent event) {
-		LogHelper.info("Analysing Block Registry for instances of IBlockTextureProvider...");
-		int found = 0;
-		for (Block block : GameData.getBlockRegistry()) {
-			if (block instanceof ITextureProvider) {
-				ClientInit.getProxy().register(block);
-				found++;
-			}
-		}
-		LogHelper.info("Finished Analysing the Block Registry. Found %s instances.", found);
-		LogHelper.info("Analysing Item Registry for instances of IItemTextureProvider...");
-		found = 0;
-		for (Item item : GameData.getItemRegistry()) {
-			if (item instanceof ITextureProvider) {
-				ClientInit.getProxy().register(item);
-				found++;
-			}
-		}
-		LogHelper.info("Finished Analysing the Item Registry. Found %s instances.", found);
-	}
+    @Mod.EventHandler
+    @SideOnly(Side.CLIENT)
+    public void init(FMLPreInitializationEvent event) {
+        LogHelper.info("Analysing Block Registry for instances of IBlockTextureProvider...");
+        int found = 0;
+        for (Block block : GameData.getBlockRegistry()) {
+            if (block instanceof ITextureProvider) {
+                ClientInit.getProxy().register(block);
+                found++;
+            }
+        }
+        LogHelper.info("Finished Analysing the Block Registry. Found %s instances.", found);
+        LogHelper.info("Analysing Item Registry for instances of IItemTextureProvider...");
+        found = 0;
+        for (Item item : GameData.getItemRegistry()) {
+            if (item instanceof ITextureProvider) {
+                ClientInit.getProxy().register(item);
+                found++;
+            }
+        }
+        LogHelper.info("Finished Analysing the Item Registry. Found %s instances.", found);
+    }
 }

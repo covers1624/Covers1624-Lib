@@ -7,6 +7,6 @@ import covers1624.lib.api.texture.ITextureRegistry;
  */
 public interface ITextureProvider {
 
-	void registerIcons(ITextureRegistry textureRegistry);
+    void registerIcons(ITextureRegistry textureRegistry);
 
 }

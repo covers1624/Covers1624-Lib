@@ -1,15 +1,11 @@
 package covers1624.lib.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.WeightedRandomChestContent;
-import net.minecraftforge.common.ChestGenHooks;
-
 /**
  * Created by covers1624 on 1/15/2016.
  */
 public class ChestGenHelper {
-
-	public static void addToMineshaftCorridorLoot(ItemStack stack, int minAmount, int maxAmount, int weight) {
+    //TODO Add for new methods once PR is pulled.
+    /*public static void addToMineshaftCorridorLoot(ItemStack stack, int minAmount, int maxAmount, int weight) {
 		ChestGenHooks hook = ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR);
 		hook.addItem(new WeightedRandomChestContent(stack, minAmount, maxAmount, weight));
 	}
@@ -62,5 +58,5 @@ public class ChestGenHelper {
 	public static void addToNetherFortressLoot(ItemStack stack, int minAmount, int maxAmount, int weight) {
 		ChestGenHooks hook = ChestGenHooks.getInfo(ChestGenHooks.NETHER_FORTRESS);
 		hook.addItem(new WeightedRandomChestContent(stack, minAmount, maxAmount, weight));
-	}
+	}*/
 }

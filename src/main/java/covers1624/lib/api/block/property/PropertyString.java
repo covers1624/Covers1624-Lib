@@ -1,5 +1,6 @@
 package covers1624.lib.api.block.property;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.block.properties.PropertyHelper;
 
@@ -12,20 +13,26 @@ import java.util.HashSet;
  */
 public class PropertyString extends PropertyHelper<String> {
 
-	private final HashSet<String> valuesSet = new HashSet<String>();
+    private final HashSet<String> valuesSet = new HashSet<String>();
 
-	public PropertyString(String name, String... values) {
-		super(name, String.class);
-		Collections.addAll(valuesSet, values);
-	}
+    public PropertyString(String name, String... values) {
+        super(name, String.class);
+        Collections.addAll(valuesSet, values);
+    }
 
-	@Override
-	public Collection<String> getAllowedValues() {
-		return ImmutableSet.copyOf(valuesSet);
-	}
+    @Override
+    public Collection<String> getAllowedValues() {
+        return ImmutableSet.copyOf(valuesSet);
+    }
 
-	@Override
-	public String getName(String value) {
-		return value;
-	}
+    @Override
+    public Optional<String> parseValue(String value) {
+        //return Optional.<String>fromNullable(this.valuesSet.get(value));
+        return null;//TODO
+    }
+
+    @Override
+    public String getName(String value) {
+        return value;
+    }
 }

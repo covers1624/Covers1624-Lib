@@ -13,24 +13,24 @@ import net.minecraft.util.EnumFacing;
  */
 public abstract class BaseBlock extends Block implements IBlockTextureProvider {
 
-	private Icon icon;
+    private Icon icon;
 
-	public BaseBlock(Material material) {
-		super(material);
-	}
+    public BaseBlock(Material material) {
+        super(material);
+    }
 
-	@Override
-	public Icon getIcon(IBlockState blockState, EnumFacing face) {
-		return icon;
-	}
+    @Override
+    public Icon getIcon(IBlockState blockState, EnumFacing face) {
+        return icon;
+    }
 
-	@Override
-	public Icon getIcon(int meta, EnumFacing face) {
-		return icon;
-	}
+    @Override
+    public Icon getIcon(int meta, EnumFacing face) {
+        return icon;
+    }
 
-	@Override
-	public void registerIcons(ITextureRegistry textureRegistry) {
-		icon = textureRegistry.registerIcon("missingno");
-	}
+    @Override
+    public void registerIcons(ITextureRegistry textureRegistry) {
+        icon = textureRegistry.registerIcon("missingno");
+    }
 }

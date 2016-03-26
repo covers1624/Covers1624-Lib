@@ -8,11 +8,11 @@ import net.minecraft.util.ResourceLocation;
  */
 public class TextureAtlasSpriteAccessor extends TextureAtlasSprite {
 
-	protected TextureAtlasSpriteAccessor(String spriteName) {
-		super(spriteName);
-	}
+    protected TextureAtlasSpriteAccessor(String spriteName) {
+        super(spriteName);
+    }
 
-	public static TextureAtlasSprite createTexture(String spriteName) {
-		return makeAtlasSprite(new ResourceLocation(spriteName));
-	}
+    public static TextureAtlasSprite createTexture(String spriteName) {
+        return makeAtlasSprite(new ResourceLocation(spriteName));
+    }
 }

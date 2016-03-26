@@ -14,15 +14,15 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-version = "1.8.9-2.0"
+version = "1.9-2.0"
 group= "covers1624.lib"
 archivesBaseName = "Covers1624Lib"
 
 minecraft {
-    version = "1.8.9-11.15.0.1692"
+    version = "12.16.0.1804-1.9"
     runDir = "run"
 	
-	mappings = "stable_20"
+	mappings = "snapshot_20160324"
 	makeObfSourceJar = false
 }
 
