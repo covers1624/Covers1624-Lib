@@ -9,14 +9,20 @@ import java.util.Collections;
 import java.util.HashSet;
 
 /**
- * Created by covers1624 on 1/16/2016.
+ * Created by covers1624 on 2/6/2016.
  */
 public class PropertyString extends PropertyHelper<String> {
 
-    private final HashSet<String> valuesSet = new HashSet<String>();
+    private final HashSet<String> valuesSet;
+
+    public PropertyString(String name, Collection<String> values) {
+        super(name, String.class);
+        valuesSet = new HashSet<String>(values);
+    }
 
     public PropertyString(String name, String... values) {
         super(name, String.class);
+        valuesSet = new HashSet<String>();
         Collections.addAll(valuesSet, values);
     }
 
@@ -27,8 +33,10 @@ public class PropertyString extends PropertyHelper<String> {
 
     @Override
     public Optional<String> parseValue(String value) {
-        //return Optional.<String>fromNullable(this.valuesSet.get(value));
-        return null;//TODO
+        if (valuesSet.contains(value)) {
+            return Optional.of(value);
+        }
+        return Optional.absent();
     }
 
     @Override
@@ -36,3 +44,4 @@ public class PropertyString extends PropertyHelper<String> {
         return value;
     }
 }
+
