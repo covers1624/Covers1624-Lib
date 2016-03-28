@@ -6,6 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockUtils {
@@ -16,7 +17,7 @@ public class BlockUtils {
         //	world.getChunkFromBlockCoords(x, z).setChunkModified();
         //}
     }
-
+    @Deprecated
     public static void updateIndirectNeighbors(World world, BlockPosition position, IBlockState state, Block block) {
         if (!world.isRemote) {
             for (int i = -3; i <= 3; i++) {
@@ -34,7 +35,7 @@ public class BlockUtils {
             }
         }
     }
-
+    @Deprecated
     public static void notifyBlock(World world, BlockPosition position, IBlockState state, Block blockToUpdate) {
         Block block = position.getBlock(world);
 
@@ -80,27 +81,21 @@ public class BlockUtils {
         }
     }
 
+    @Deprecated
     public static boolean isEntityInRage(BlockPosition position, Entity entity, int range) {
-        return entity.getDistanceSq(position.x + 0.5D, position.y + 0.5D, position.z + 0.5D) <= range;
+        return isEntityInRage(position.toBlockPos(), entity, range);
     }
 
+    public static boolean isEntityInRage(BlockPos position, Entity entity, int range) {
+        return entity.getDistanceSq(position.getX() + 0.5D, position.getY() + 0.5D, position.getZ() + 0.5D) <= range;
+    }
+
+    @Deprecated
     public static void fireLightUpdate(World world, BlockPosition position) {
-        world.notifyLightSet(position.toBlockPos());
+        fireLightUpdate(world, position.toBlockPos());
     }
 
-    public static EnumFacing entityRotationToSide(int rotation) {
-        switch (rotation) {
-        case 0:
-            return EnumFacing.EAST;
-
-        case 1:
-            return EnumFacing.SOUTH;
-
-        case 2:
-            return EnumFacing.WEST;
-
-        default:
-            return EnumFacing.NORTH;
-        }
+    public static void fireLightUpdate(World world, BlockPos position) {
+        world.notifyLightSet(position);
     }
 }

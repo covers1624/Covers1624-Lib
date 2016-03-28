@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -20,12 +21,25 @@ public class ItemUtils {
      * @param position Location to drop item.
      * @param stack    ItemStack to drop.
      */
+    @Deprecated
     public static void dropItem(World world, BlockPosition position, ItemStack stack) {
+        dropItem(world, position.toBlockPos(), stack);
+    }
+
+    /**
+     * Drops an item in the world at the given BlockPosition
+     * Will only drop the item on the server.
+     *
+     * @param world    World to drop the item.
+     * @param position Location to drop item.
+     * @param stack    ItemStack to drop.
+     */
+    public static void dropItem(World world, BlockPos position, ItemStack stack) {
         if (!world.isRemote) {
             double xVelocity = world.rand.nextFloat() * 0.7D + (1.0D - 0.7D) * 0.5D;
             double yVelocity = world.rand.nextFloat() * 0.7D + (1.0D - 0.7D) * 0.5D;
             double zVelocity = world.rand.nextFloat() * 0.7D + (1.0D - 0.7D) * 0.5D;
-            EntityItem entityItem = new EntityItem(world, position.x + xVelocity, position.y + yVelocity, position.z + zVelocity, stack);
+            EntityItem entityItem = new EntityItem(world, position.getX() + xVelocity, position.getY() + yVelocity, position.getZ() + zVelocity, stack);
             entityItem.setPickupDelay(10);
             world.spawnEntityInWorld(entityItem);
         }
@@ -39,7 +53,20 @@ public class ItemUtils {
      * @param position  Location to drop item.
      * @param inventory IInventory to drop.
      */
+    @Deprecated
     public static void dropInventory(World world, BlockPosition position, IInventory inventory) {
+        dropInventory(world, position.toBlockPos(), inventory);
+    }
+
+    /**
+     * Drops all the items in an IInventory on the ground.
+     * Client safe.
+     *
+     * @param world     World to drop the item.
+     * @param position  Location to drop item.
+     * @param inventory IInventory to drop.
+     */
+    public static void dropInventory(World world, BlockPos position, IInventory inventory) {
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack != null && stack.stackSize > 0) {
@@ -62,15 +89,25 @@ public class ItemUtils {
         return null;
     }
 
+    @Deprecated
     public static void ejectItems(World world, BlockPosition pos, ArrayList<ItemStack> stacks, EnumFacing dir) {
+        ejectItems(world, pos.toBlockPos(), stacks, dir);
+    }
+
+    public static void ejectItems(World world, BlockPos pos, ArrayList<ItemStack> stacks, EnumFacing dir) {
         for (ItemStack stack : stacks) {
             ejectItem(world, pos, stack, dir);
         }
     }
 
+    @Deprecated
     public static void ejectItem(World world, BlockPosition pos, ItemStack stack, EnumFacing dir) {
-        pos.step(dir);
-        EntityItem entity = new EntityItem(world, pos.x + 0.5, pos.y + 0.5, pos.z + 0.5, stack);
+        ejectItem(world, pos.toBlockPos(), stack, dir);
+    }
+
+    public static void ejectItem(World world, BlockPos pos, ItemStack stack, EnumFacing dir) {
+        pos.offset(dir);
+        EntityItem entity = new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
         entity.motionX = 0.0;
         entity.motionY = 0.0;
         entity.motionZ = 0.0;
