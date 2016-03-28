@@ -150,16 +150,16 @@ public class RotationUtils {
     public static EnumFacing entityRotationToSide(int rotation) {
         switch (rotation) {
         case 0:
-            return EnumFacing.EAST;
-
-        case 1:
             return EnumFacing.SOUTH;
 
-        case 2:
+        case 1:
             return EnumFacing.WEST;
 
-        default:
+        case 2:
             return EnumFacing.NORTH;
+
+        default:
+            return EnumFacing.EAST;
         }
     }
 
