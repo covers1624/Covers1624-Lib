@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 
@@ -160,5 +161,25 @@ public class ItemUtils {
         int itemStack1ID = Item.getIdFromItem(stack1.getItem());
         int itemStack2ID = Item.getIdFromItem(stack1.getItem());
         return itemStack1ID != itemStack2ID ? itemStack1ID - itemStack2ID : (stack1.getItemDamage() == stack2.getItemDamage() ? 0 : (stack1.getItem().getHasSubtypes() ? stack1.getItemDamage() - stack2.getItemDamage() : 0));
+    }
+
+    /**
+     * @param stack1 The {@link ItemStack} being compared.
+     * @param stack2 The {@link ItemStack} to compare to.
+     * @return whether the two items are the same in terms of damage and itemID.
+     */
+    public static boolean areStacksSameType(ItemStack stack1, ItemStack stack2) {
+        return stack1 != null && stack2 != null && (stack1.getItem() == stack2.getItem() && (!stack2.getHasSubtypes() || stack2.getItemDamage() == stack1.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack2, stack1));
+    }
+
+    /**
+     * {@link ItemStack}s with damage -1 are wildcards allowing all damages. Eg all colours of wool are allowed to create Beds.
+     *
+     * @param stack1 The {@link ItemStack} being compared.
+     * @param stack2 The {@link ItemStack} to compare to.
+     * @return whether the two items are the same from the perspective of a crafting inventory.
+     */
+    public static boolean areStacksSameTypeCrafting(ItemStack stack1, ItemStack stack2) {
+        return stack1 != null && stack2 != null && stack1.getItem() == stack2.getItem() && (stack1.getItemDamage() == stack2.getItemDamage() || stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE || stack1.getItem().isDamageable());
     }
 }
