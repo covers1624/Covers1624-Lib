@@ -1,7 +1,5 @@
 package covers1624.lib.network;
 
-import covers1624.lib.handler.ConfigurationHandler;
-import covers1624.lib.util.LogHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
@@ -10,17 +8,16 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.IThreadListener;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.Level;
 
 import java.util.*;
 
@@ -44,17 +41,17 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
      */
     public boolean registerPacket(Class<? extends AbstractPacket> clazz) {
         if (this.packets.size() > 256) {
-            LogHelper.fatal("Failed to register packet, The array is full.");
+            FMLLog.severe("[Covers1624 Lib] Failed to register packet, There are more than 256 packet.. Make a new chanel..");
             return false;
         }
 
         if (this.packets.contains(clazz)) {
-            LogHelper.fatal("Packet Allready Registered: " + clazz.toString());
+            FMLLog.severe("[Covers1624 Lib] Packet Already Registered: " + clazz.toString());
             return false;
         }
 
         if (this.isPostInitialised) {
-            LogHelper.fatal("Already started PostInit, You are doing it wrong, Add Packets any time before PostInit.");
+            FMLLog.severe("[Covers1624 Lib] Already started PostInit, You are doing it wrong, Add Packets any time before PostInit.");
             return false;
         }
 
@@ -76,16 +73,11 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
         msg.encodeInto(ctx, buffer);
         FMLProxyPacket proxyPacket = new FMLProxyPacket(new PacketBuffer(buffer.copy()), ctx.channel().attr(NetworkRegistry.FML_CHANNEL).get());
         out.add(proxyPacket);
-        byte[] bytes = buffer.array();
-        String noBytes = Double.valueOf(bytes.length).toString();
-        String kBytes = Double.valueOf(bytes.length / 1024).toString();
-        String mBytes = Double.valueOf((bytes.length / 1024) / 1024).toString();
-        LogHelper.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Writing packet to network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
     }
 
     // In line decoding and handling of the packet
     @Override
-    protected void decode(ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception {
+    protected void decode(final ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception {
         ByteBuf payload = msg.payload();
         byte discriminator = payload.readByte();
         Class<? extends AbstractPacket> clazz = this.packets.get(discriminator);
@@ -93,32 +85,28 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
             throw new NullPointerException("No packet registered for discriminator: " + discriminator);
         }
 
-        AbstractPacket pkt = clazz.newInstance();
+        final AbstractPacket pkt = clazz.newInstance();
         pkt.decodeInto(ctx, payload.slice());
 
-        EntityPlayer player;
+        IThreadListener threadListener = FMLCommonHandler.instance().getEffectiveSide().isClient() ? Minecraft.getMinecraft() : FMLCommonHandler.instance().getMinecraftServerInstance();
+        threadListener.addScheduledTask(new Runnable() {
+            @Override
+            public void run() {
+                handlePacket(pkt, getCurrentPlayer(ctx));
+            }
+        });
+    }
+
+    private void handlePacket(AbstractPacket packet, EntityPlayer player) {
         switch (FMLCommonHandler.instance().getEffectiveSide()) {
         case CLIENT:
-            player = this.getClientPlayer();
-            pkt.handleClientSide(player);
+            packet.handleClientSide(player);
             break;
-
         case SERVER:
-            INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
-            player = ((NetHandlerPlayServer) netHandler).playerEntity;
-            pkt.handleServerSide(player);
+            packet.handleServerSide(player);
             break;
-
         default:
         }
-
-        byte[] bytes = payload.array();
-
-        String noBytes = Double.valueOf(bytes.length).toString();
-        String kBytes = Double.valueOf(bytes.length / 1024).toString();
-        String mBytes = Double.valueOf((bytes.length / 1024) / 1024).toString();
-        LogHelper.log(ConfigurationHandler.logAllNetworkTraffic ? Level.INFO : Level.TRACE, String.format("Reading packet from network... Bytes: %s, Kb: %s, Mb: %s", noBytes, kBytes, mBytes));
-
     }
 
     // Method to call from FMLInitializationEvent
@@ -149,8 +137,10 @@ public class PacketPipeline extends MessageToMessageCodec<FMLProxyPacket, Abstra
         });
     }
 
-    @SideOnly(Side.CLIENT)
-    private EntityPlayer getClientPlayer() {
+    private EntityPlayer getCurrentPlayer(ChannelHandlerContext context) {
+        if (FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+            return ((NetHandlerPlayServer) context.channel().attr(NetworkRegistry.NET_HANDLER).get()).playerEntity;
+        }
         return Minecraft.getMinecraft().thePlayer;
     }
 

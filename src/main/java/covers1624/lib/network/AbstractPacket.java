@@ -13,6 +13,8 @@ public abstract class AbstractPacket {
 
     /**
      * Encode the packet data into the ByteBuf stream. Complex data sets may need specific data handlers (See
+     * <p/>
+     * Called on the Netty thread.
      *
      * @param ctx    channel context
      * @param buffer the buffer to encode into
@@ -22,6 +24,8 @@ public abstract class AbstractPacket {
 
     /**
      * Decode the packet data from the ByteBuf stream. Complex data sets may need specific data handlers (See
+     * <p/>
+     * Called on the Netty thread.
      *
      * @param ctx    channel context
      * @param buffer the buffer to decode from
@@ -32,12 +36,16 @@ public abstract class AbstractPacket {
     /**
      * Handle a packet on the client side. Note this occurs after decoding has completed.
      *
+     * Called on the client thread.
+     *
      * @param player the player reference
      */
     public abstract void handleClientSide(EntityPlayer player);
 
     /**
      * Handle a packet on the server side. Note this occurs after decoding has completed.
+     *
+     * Called on the server thread.
      *
      * @param player the player reference
      */

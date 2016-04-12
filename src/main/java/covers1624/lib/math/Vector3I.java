@@ -26,11 +26,6 @@ public class Vector3I {
         this.z = vec.z;
     }
 
-    @Override
-    public Object clone() {
-        return new Vector3I(this);
-    }
-
     public void set(int x, int y, int z) {
         this.x = x;
         this.y = y;
