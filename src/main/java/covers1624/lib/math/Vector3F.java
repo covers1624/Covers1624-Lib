@@ -6,6 +6,7 @@ import java.util.Locale;
 /**
  * Created by covers1624 on 1/12/2016.
  */
+@Deprecated//Use CCL.
 public class Vector3F {
     public float x;
     public float y;

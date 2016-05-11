@@ -6,7 +6,7 @@ package covers1624.lib.util;
 public class ChestGenHelper {
     //TODO Add for new methods once PR is pulled.
     /*public static void addToMineshaftCorridorLoot(ItemStack stack, int minAmount, int maxAmount, int weight) {
-		ChestGenHooks hook = ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR);
+        ChestGenHooks hook = ChestGenHooks.getInfo(ChestGenHooks.MINESHAFT_CORRIDOR);
 		hook.addItem(new WeightedRandomChestContent(stack, minAmount, maxAmount, weight));
 	}
 

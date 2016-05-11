@@ -5,6 +5,7 @@ import net.minecraft.util.math.Vec3i;
 import java.util.Formatter;
 import java.util.Locale;
 
+@Deprecated//Use CCL
 public class Vector3 {
     public double x;
     public double y;
@@ -26,7 +27,7 @@ public class Vector3 {
         this.z = vec.z;
     }
 
-    public Vector3(Vec3i vec3i){
+    public Vector3(Vec3i vec3i) {
         this.x = vec3i.getX();
         this.y = vec3i.getY();
         this.z = vec3i.getZ();

@@ -4,7 +4,6 @@ import covers1624.lib.math.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,6 +16,7 @@ public class BlockUtils {
         //	world.getChunkFromBlockCoords(x, z).setChunkModified();
         //}
     }
+
     @Deprecated
     public static void updateIndirectNeighbors(World world, BlockPosition position, IBlockState state, Block block) {
         if (!world.isRemote) {
@@ -35,6 +35,7 @@ public class BlockUtils {
             }
         }
     }
+
     @Deprecated
     public static void notifyBlock(World world, BlockPosition position, IBlockState state, Block blockToUpdate) {
         Block block = position.getBlock(world);

@@ -24,7 +24,7 @@ public class BlockPosition {
 
     public static final int[][] SIDE_COORD_MOD = { { 0, -1, 0 }, { 0, 1, 0 }, { 0, 0, -1 }, { 0, 0, 1 }, { -1, 0, 0 }, { 1, 0, 0 } };
     /*
-		Constructors
+        Constructors
 	 */
 
     public BlockPosition(int x, int y, int z, EnumFacing orientation) {
